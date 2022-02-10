@@ -50,7 +50,7 @@ training_pop<-subset_data[sample(nrow(subset_data), nrow(subset_data)*0.9),]
 testing_pop<-subset(subset_data, ! (rownames(subset_data) %in% rownames(training_pop)))
 
 rf_hybrids <- randomForest(
-  x = training_pop[,c(1:4, 7:10)], 							#these are the predictors
+  x = training_pop[,c(1:4, 7:10)], 							#these are the predictors ## leave out variable 1
   y = training_pop[,5]),						#response - I've made it factor here to force classification
   ### I made the c a numeric above because I've not checked how variable it is over all
   importance = T,						#save variable importance metrics
@@ -89,3 +89,18 @@ varImpPlot(rf_hybrids_predict_c, sort=T)
 out <- predict(rf_hybrids_predict_c,testing_pop,'response')
 ### I'm not entirely sure what this is telling me, or how to interpret the confusion matrix
 plot(out~testing_pop$c, xlab="real c", ylab="predicted c")
+
+
+
+####################################################################################
+##### now that I've figured out the jist of how to do this, I want to tune these####
+####################################################################################
+### following this https://machinelearningmastery.com/tune-machine-learning-algorithms-in-r/
+### start tuning mtry - number of variables randomly sampled as candidates
+### and ntree - number of trees to grow - obs this makes a huge difference on how long this takes to run
+set.seed(42)
+y<-training_pop[,10]
+x<-training_pop[,1:9]
+bestmtry <- tuneRF(x, y, stepFactor=1.5, improve=1e-5, ntree=500)
+print(bestmtry)
+
