@@ -55,7 +55,7 @@ summary(alldata_df)
 
 ### need to take the mean # of junctions for 1:19 replicates, for each generation, for each deme, for each m, for each c
 
-likelihoods<-matrix(nrow=600, ncol=20)
+likelihoods<-matrix(nrow=120, ncol=20)
 plots<-list()
 
 ### only going to use middle, hybridizing demes 5 and 6
