@@ -28,19 +28,24 @@ sum(dpois(c(1,2,5,12), lambda=5, log=TRUE))
 
 #### the plan is to see if we can use 19 demes from a simulation to predict the 20th, accross different generations. 
 ###when working on local computer
-setwd("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/")
+setwd("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11")
 
 ##########################
 #### load in the data#####
 ##########################
 library(stringr)
+library(MASS)
 ##if using local computer
-datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/" , pattern="*first8cols.txt.gz")
+datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11" , pattern="*first8cols.txt.gz")
 ##if using teton
 #datafiles<-list.files("/project/evolgen/jjahner/hybrid_sims/" , pattern="*first8cols.txt.gz")
 m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
 c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
 c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
+
+
+### just for the moment because #4 and #5 aren't perfect
+datafiles<-datafiles[c(1:3, 6)] ### take this out when we've fixed the grep
 
 alldata<-list()
 for(i in 1:length(datafiles)){
@@ -54,20 +59,20 @@ alldata_df<-do.call(rbind.data.frame, alldata)
 summary(alldata_df)
 
 ### need to take the mean # of junctions for 1:19 replicates, for each generation, for each deme, for each m, for each c
+nrow<-10*length(datafiles)
 
-likelihoods<-matrix(nrow=120, ncol=20)
-plots<-list()
+likelihoods<-matrix(nrow=nrow, ncol=20)
 
 ### only going to use middle, hybridizing demes 5 and 6
 ## two reasons for this - 1), this is really what we're most interested in, and 2) we were getting -INFs when the mean njuncts was 0. 
-alldata_df_56<-subset(alldata_df, deme %in% c(5,6))
+alldata_df_6<-subset(alldata_df, deme %in% c(6))
 
 for(j in 1:20){ ##change this back to 20
-mean_njunct<-with(alldata_df_56[alldata_df_56$rep!=j,], aggregate(njunct, list(m, c, gen, deme), mean))
-names(mean_njunct)<-c("m", "c", "gen", "deme", "mean_njunct")
-mean_njunct$index<-paste(mean_njunct$m, mean_njunct$c, mean_njunct$gen, mean_njunct$deme)#### there is definitely a cleverer way to do this
-alldata_df_56$index<-paste(alldata_df_56$m, alldata_df_56$c, alldata_df_56$gen, alldata_df_56$deme)
-alldata_df_leftout<-alldata_df_56[alldata_df_56$rep==j, ]
+mean_njunct<-with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(njunct, list(m, c, gen), mean))
+names(mean_njunct)<-c("m", "c", "gen", "mean_njunct")
+mean_njunct$index<-paste(mean_njunct$m, mean_njunct$c, mean_njunct$gen)#### there is definitely a cleverer way to do this
+alldata_df_6$index<-paste(alldata_df_6$m, alldata_df_6$c, alldata_df_6$gen)
+alldata_df_leftout<-alldata_df_6[alldata_df_6$rep==j, ]
 
 for(i in 1:length(mean_njunct$index)){ ##change this back to length(mean_njunct$index)
 likelihoods[i,j]<-sum(dpois(alldata_df_leftout[alldata_df_leftout$index==mean_njunct$index[i], ]$njunct, lambda=mean_njunct$mean_njunct[i], log=TRUE))
@@ -76,8 +81,9 @@ likelihoods[i,j]<-sum(dpois(alldata_df_leftout[alldata_df_leftout$index==mean_nj
 }
 }
 
-## give us a m, c, gen, deme by replicate matrix. 
+## give us a m, c, gen by replicate matrix. 
 
 ### I think that the next thing to do would be to make plots for everything, but all from one simulation at first? and then loop through all of the simulations
 
 str(likelihoods)
+summary(likelihoods)
