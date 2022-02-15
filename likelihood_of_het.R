@@ -1,4 +1,4 @@
-###want to extend the njunctions loop to q and het scores
+###want to extend the njunctions loop to het scores
 
 #### the plan is to see if we can use 19 demes from a simulation to predict the 20th, accross different generations. 
 ###when working on local computer
@@ -43,7 +43,7 @@ likelihoods<-matrix(nrow=nrow, ncol=20)
 alldata_df_6<-subset(alldata_df, deme %in% c(6))
 
 ### this is because the beta distribution is 0 to 1, excluding 0 and 1. I'm not entirely sure how much this matters, but I think it's what's needed to make fdistr beta to work
-alldata_df_6$q<-ifelse(alldata_df_6$q ==0, alldata_df_6$q+0.001, ifelse(alldata_df_6$q == 1, alldata_df_6$q-0.001, alldata_df_6$q))
+alldata_df_6$het<-ifelse(alldata_df_6$het ==0, alldata_df_6$het+0.001, ifelse(alldata_df_6$het == 1, alldata_df_6$het-0.001, alldata_df_6$het))
 
 get_dist<-function(x){
   estimates<-fitdistr(x, 'beta', start=list(shape1=10,shape2=10), lower=c(0,0)) ### not at all sure how to decide on the starting shapes!
@@ -52,7 +52,7 @@ get_dist<-function(x){
 }
 
 for(j in 1:20){ ##change this back to 20
-  beta_parameters<-with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(q, list(m, c, gen), get_dist))
+  beta_parameters<-with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(het, list(m, c, gen), get_dist))
   beta_parameters<-cbind(beta_parameters[1:3], data.frame(beta_parameters[4]$x))
   names(beta_parameters)<-c("m", "c", "gen", "alpha", "beta")
   beta_parameters$index<-paste(beta_parameters$m, beta_parameters$c, beta_parameters$gen)
@@ -60,7 +60,7 @@ for(j in 1:20){ ##change this back to 20
   alldata_df_leftout<-alldata_df_6[alldata_df_6$rep==j, ]
   
   for(i in 1:length(beta_parameters$index)){ ##change this back to length(mean_njunct$index)
-    likelihoods[i,j]<-sum(dbeta(alldata_df_leftout[alldata_df_leftout$index==beta_parameters$index[i], ]$q, shape1=beta_parameters$alpha[i], shape2=beta_parameters$beta[i], log=TRUE))
+    likelihoods[i,j]<-sum(dbeta(alldata_df_leftout[alldata_df_leftout$index==beta_parameters$index[i], ]$het, shape1=beta_parameters$alpha[i], shape2=beta_parameters$beta[i], log=TRUE))
   }
 }
 
