@@ -30,6 +30,7 @@ for(i in 1:length(datafiles)){
 }
 alldata_df<-do.call(rbind.data.frame, alldata)
 summary(alldata_df)
+### I'm not at all sure that I need this, so maybe take it out if it's not needed. 
 alldata_df$gen<-as.factor(alldata_df$gen)
 #need to take the mean # of junctions for 19 replicates, for each generation, for each deme, for each m, for each c, and ask how the individual number of junctions for the other replicate fits the distribution
 #do this for each replicate, through all 20
@@ -54,7 +55,7 @@ for(j in 1:20){ ##change this back to 20
 }
 
 
-like_out <- cbind(mean_njunct[,1:3], likelihoods)
+like_out <- cbind(mean_njunct[,1:4], likelihoods)
 dim(like_out)
 head(like_out)
 
@@ -82,19 +83,58 @@ alldata_df_6$q<-ifelse(alldata_df_6$q ==0, 0.001, ifelse(alldata_df_6$q == 1, 0.
 
 
 #### the current problem is that the starting shape really can't be the same for each of these. Which means that I can't run all 240 as a function, I've got to figure out what the starting shape is for each trial. 
-get_dist<-function(x){
-  estimates<-fitdistr(x, 'beta', start=list(shape1=100,shape2=100), lower=c(0,0)) ### not at all sure how to decide on the starting shapes!
+get_dist<-function(x, shape1, shape2){
+
+    estimates<-fitdistr(x, 'beta', start=list(shape1=shape1,shape2=shape2), lower=c(0.0001,0.0001)) ### not at all sure how to decide on the starting shapes!
+  
   estimates$estimate
   ### this completely ignores the error around the alpha and beta distributions. Not sure about this at all. 
 }
 
 subset(alldata_df_6, mech=="dmi_m")->alldata_df_6
-for(j in 1:5){ ##change this back to 20
-  beta_parameters<-with(alldata_df_6[alldata_df_6$rep!=j,], tapply(q, list(m, c), get_dist)) ### this works, so long as I take out either j=2 or j=12?
-  beta_parameters<-cbind(beta_parameters[1:3], data.frame(beta_parameters[4]$x))
-  names(beta_parameters)<-c("m", "c", "gen","alpha", "beta")
+for(j in 1:20){ ##change this back to 20
+  beta_parameters<-tryCatch(
+    {
+      message("This is the try part")
+      with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(q, list(m, c, gen, mech), get_dist, shape1=5, shape2=5))
+    }, 
+    error=function(cond){
+      message(paste("fitdistr isn't working because it doesn't like your starting values"))
+      message("Here's the original error message:")
+      message(cond)
+      tryCatch(
+        {
+          message("This is the try again part")
+          with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(q, list(m, c, gen, mech), get_dist, shape1=10, shape2=10))
+        },
+        error=function(again){
+          message(paste("fitdistr isn't working because it still doesn't like your starting values"))
+          message("Here's the original error message:")
+          message(again)
+          with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(q, list(m, c, gen, mech), get_dist, shape1=1, shape2=1))
+        }, 
+        warning=function(again){
+          message(paste("You've got a warning, that's fine"))
+          message("Here's the warning:")
+          message(again)
+        }, 
+        finally={
+          message(paste("It's over"))
+        }
+      )
+    },
+    warning=function(cond){
+      message(paste("You've got a warning, that's fine"))
+      message("Here's the warning:")
+      message(cond)
+    }, 
+    finally={
+      message(paste("It's over"))
+    })
+  beta_parameters<-cbind(beta_parameters[1:4], data.frame(beta_parameters[5]$x))
+  names(beta_parameters)<-c("m", "c", "gen","mechanism","alpha", "beta")
   beta_parameters$index<-paste(beta_parameters$m, beta_parameters$c, beta_parameters$gen)
-  alldata_df_6$index<-paste(alldata_df_6$m, alldata_df_6$c, alldata_df_6$gen)
+  alldata_df_6$index<-paste(alldata_df_6$m, alldata_df_6$c, alldata_df_6$gen, alldata_df_6$mech)
   alldata_df_leftout<-alldata_df_6[alldata_df_6$rep==j, ]
   
   for(i in 1:length(beta_parameters$index)){ ##change this back to length(mean_njunct$index)
@@ -115,40 +155,11 @@ head(likes)
 
 #write.table(likes, file="deme11_q_likes.txt", quote=F, row.names=F, col.names=F)
 
-
-
-
 ########################################
 ## 5) eryn's code for het (Q)
 ########################################
 
 ### doing the same thing, but for het, using a beta. Many, many more questions. 
-
-##########################
-#### load in the data#####
-##########################
-library(stringr)
-library(MASS)
-library(fitdistrplus)
-##if using local computer
-#datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11" , pattern="*first8cols.txt.gz")
-##if using teton - something needs to change here to get data from all 3 folders. 
-datafiles<-list.files("/project/evolgen/jjahner/hybrid_sims/deme11/" , pattern="*first8cols.txt.gz")
-m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
-c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
-c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
-
-
-alldata<-list()
-for(i in 1:length(datafiles)){
-  alldata[[i]]<-read.table(gzfile(datafiles[i]), sep=",", header=T)
-  alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]])))
-  alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
-}
-
-alldata_df<-do.call(rbind.data.frame, alldata)
-
-summary(alldata_df)
 
 ### need to take the mean # of junctions for 1:19 replicates, for each generation, for each deme, for each m, for each c
 nrow<-10*length(datafiles)
@@ -162,18 +173,49 @@ alldata_df_6<-subset(alldata_df, deme %in% c(6))
 ### this is because the beta distribution is 0 to 1, excluding 0 and 1. I'm not entirely sure how much this matters, but I think it's what's needed to make fdistr beta to work
 alldata_df_6$het<-ifelse(alldata_df_6$het ==0, alldata_df_6$het+0.001, ifelse(alldata_df_6$het == 1, alldata_df_6$het-0.001, alldata_df_6$het))
 
-get_dist<-function(x){
-  estimates<-fitdistr(x, 'beta', start=list(shape1=10,shape2=10)) ### not at all sure how to decide on the starting shapes!
-  estimates$estimate
-  ### this completely ignores the error around the alpha and beta distributions. Not sure about this at all. 
-}
-
 for(j in 1:20){ ##change this back to 20
-  beta_parameters<-with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(het, list(m, c, gen), get_dist))
-  beta_parameters<-cbind(beta_parameters[1:3], data.frame(beta_parameters[4]$x))
-  names(beta_parameters)<-c("m", "c", "gen", "alpha", "beta")
+  beta_parameters<-tryCatch(
+    {
+      message("This is the try part")
+      with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(het, list(m, c, gen, mech), get_dist, shape1=5, shape2=5))
+    }, 
+    error=function(cond){
+      message(paste("fitdistr isn't working because it doesn't like your starting values"))
+      message("Here's the original error message:")
+      message(cond)
+      tryCatch(
+        {
+          message("This is the try again part")
+          with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(het, list(m, c, gen, mech), get_dist, shape1=10, shape2=10))
+        },
+        error=function(again){
+          message(paste("fitdistr isn't working because it still doesn't like your starting values"))
+          message("Here's the original error message:")
+          message(again)
+          with(alldata_df_6[alldata_df_6$rep!=j,], aggregate(het, list(m, c, gen, mech), get_dist, shape1=1, shape2=1))
+        }, 
+        warning=function(again){
+          message(paste("You've got a warning, that's fine"))
+          message("Here's the warning:")
+          message(again)
+        }, 
+        finally={
+          message(paste("It's over"))
+        }
+      )
+    },
+    warning=function(cond){
+      message(paste("You've got a warning, that's fine"))
+      message("Here's the warning:")
+      message(cond)
+    }, 
+    finally={
+      message(paste("It's over"))
+    })
+  beta_parameters<-cbind(beta_parameters[1:4], data.frame(beta_parameters[5]$x))
+  names(beta_parameters)<-c("m", "c", "gen","mechanism","alpha", "beta")
   beta_parameters$index<-paste(beta_parameters$m, beta_parameters$c, beta_parameters$gen)
-  alldata_df_6$index<-paste(alldata_df_6$m, alldata_df_6$c, alldata_df_6$gen)
+  alldata_df_6$index<-paste(alldata_df_6$m, alldata_df_6$c, alldata_df_6$gen, alldata_df_6$mech)
   alldata_df_leftout<-alldata_df_6[alldata_df_6$rep==j, ]
   
   for(i in 1:length(beta_parameters$index)){ ##change this back to length(mean_njunct$index)
