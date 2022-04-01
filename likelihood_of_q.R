@@ -9,7 +9,7 @@ setwd("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/h
 ##########################
 library(stringr)
 library(MASS)
-library(fitdistrplus)
+#library(fitdistrplus)
 ##if using local computer
 datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11" , pattern="*first8cols.txt.gz")
 ##if using teton
