@@ -8,7 +8,13 @@ library(tidyverse)
 library(MASS)
 
 ### as of right now, I can't make this happen on my home computer. Needs to be run on Teton
-datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims" , pattern="*main")
+#datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims" , pattern="*main")
+### on teton
+
+#### as of right now, I can't even load this into R?
+
+### Ask Alex and Josh for help!
+datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs/deme11",  pattern="*main")
 m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
 c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
 c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
@@ -17,7 +23,7 @@ mech<-str_extract(datafiles, "^([^_]+_){1}([^_])")
 alldata<-list()
 
 for(i in 1:length(datafiles)){
-  alldata[[i]]<-read.table(gzfile(datafiles[i]), sep=",", header=T)
+  alldata[[i]]<-read.table(datafiles[i], sep=",", header=T)
   alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
   alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
   alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
