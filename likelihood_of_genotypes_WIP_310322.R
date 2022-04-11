@@ -3,9 +3,11 @@
 ######################################################
 ### want to know what the estimated distribution for each loci is
 ### need to take the mean # of junctions for 1:19 replicates, for each generation, for each deme, for each m, for each c
+#### for this to work, we need to allocate more than default memory on teton eg "salloc --account=project --time=45:00 --nodes=1 --ntasks-per-node=1 --mem=500G"
 
 library(tidyverse)
 library(MASS)
+library(data.table)
 
 ### as of right now, I can't make this happen on my home computer. Needs to be run on Teton
 #datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims" , pattern="*main")
@@ -13,7 +15,6 @@ library(MASS)
 
 #### as of right now, I can't even load this into R?
 
-### Ask Alex and Josh for help!
 datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs/deme11",  pattern="*main")
 m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
 c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
@@ -21,14 +22,16 @@ c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
 mech<-str_extract(datafiles, "^([^_]+_){1}([^_])") 
 
 alldata<-list()
+setwd("/gscratch/buerkle/data/incompatible/runs/deme11")
 
 for(i in 1:length(datafiles)){
-  alldata[[i]]<-read.table(datafiles[i], sep=",", header=T)
+  alldata[[i]]<-fread(datafiles[i], sep=",", header=T)
   alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
   alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
   alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
 }
 
+setwd("/gscratch/emcfarl2/predicting_hybrids")
 alldata_df<-do.call(rbind.data.frame, alldata)
 summary(alldata_df)
 
@@ -62,3 +65,4 @@ for(j in 1:20){ ##change this back to 20
     likelihoods[i, j]<-sum(dbinom(data_long_leftout[data_long_leftout$index==mean_freq$index[i], ]$genotype, size=300, prob=mean_freq$mean_freq[i]/2, log=TRUE))
    }
 }
+save.image(file="Predicting_hybrid_genotypes.RData")
