@@ -33,20 +33,28 @@ for(i in 1:length(datafiles)){
 
 setwd("/gscratch/emcfarl2/predicting_hybrids")
 alldata_df<-do.call(rbind.data.frame, alldata)
-summary(alldata_df)
+
+####clean up
+rm(alldata)
+#summary(alldata_df)
 
 ###only want the 6th deme again - do this up here because the computer is getting cranky about memory
 alldata_df[which(alldata_df$deme==6), ]->data_deme_6
 ### currently SNPs are wide data, not long. Should I make long so it's on a SNP level not an individual level?
+#summary(data_deme_6)
+
 
 data_long<-gather(data_deme_6, snp, genotype, l1.1:l10.51, factor_key=TRUE)
+
+##more clean up
+rm(alldata_df, data_deme_6)
 #data_long$genotype/2->data_long$genotype_scale
 #data_long$genotype_scale<-ifelse(data_long$genotype_scale==0, data_long$genotype_scale+0.0001,ifelse(data_long$genotype_scale==1,data_long$genotype_scale-0.0001, data_long$genotype_scale))
 
-### test data to get fitdistr to work
+### test data to make sure this all works
 
-test_data<-data_long[which(data_long$snp=="l1.1"),]
-test_data[which(test_data$gen==10), ]->test_data2
+#test_data<-data_long[which(data_long$snp=="l1.1"),]
+#test_data[which(test_data$gen==10), ]->test_data2
 
 nrow<-5100
 
@@ -57,12 +65,12 @@ likelihoods<-matrix(nrow=nrow, ncol=20)
 
 for(j in 1:20){ ##change this back to 20
   mean_freq<-with(data_long[data_long$rep!=j,], aggregate(genotype, list(m, c, gen, mech, snp), mean))
-  names(mean_freq)<-c("gen", "mech", "snp", "mean_freq")
+  names(mean_freq)<-c("m", "c", "gen", "mech", "snp", "mean_freq")
   mean_freq$index<-paste(mean_freq$m, mean_freq$c, mean_freq$gen, mean_freq$mech, mean_freq$snp)#### there is definitely a cleverer way to do this
   data_long$index<-paste(data_long$m, data_long$c, data_long$gen, data_long$mech, data_long$snp)
   data_long_leftout<-data_long[data_long$rep==j, ]
   for(i in 1:length(mean_freq$index)){ ##change this back to length(mean_njunct$index)
     likelihoods[i, j]<-sum(dbinom(data_long_leftout[data_long_leftout$index==mean_freq$index[i], ]$genotype, size=300, prob=mean_freq$mean_freq[i]/2, log=TRUE))
-   }
+  }
 }
 save.image(file="Predicting_hybrid_genotypes.RData")
