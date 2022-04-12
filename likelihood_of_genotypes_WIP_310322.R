@@ -56,21 +56,28 @@ rm(alldata_df, data_deme_6)
 #test_data<-data_long[which(data_long$snp=="l1.1"),]
 #test_data[which(test_data$gen==10), ]->test_data2
 
-nrow<-5100
+data_long$index<-paste(data_long$m, data_long$c, data_long$gen, data_long$mech, data_long$snp) ### took this step out of the loop because it takes a really long time and doesn't need to be done again and again
+
+nrow<-unique(length(data_long$index))
 
 likelihoods<-matrix(nrow=nrow, ncol=20)
 ## just for now
 
 ####excellent, this seems to work. Am I sure that the size is right (number of individuals *2?)
 
+start_time<-Sys.time()
+
 for(j in 1:20){ ##change this back to 20
   mean_freq<-with(data_long[data_long$rep!=j,], aggregate(genotype, list(m, c, gen, mech, snp), mean))
   names(mean_freq)<-c("m", "c", "gen", "mech", "snp", "mean_freq")
   mean_freq$index<-paste(mean_freq$m, mean_freq$c, mean_freq$gen, mean_freq$mech, mean_freq$snp)#### there is definitely a cleverer way to do this
-  data_long$index<-paste(data_long$m, data_long$c, data_long$gen, data_long$mech, data_long$snp)
   data_long_leftout<-data_long[data_long$rep==j, ]
   for(i in 1:length(mean_freq$index)){ ##change this back to length(mean_njunct$index)
     likelihoods[i, j]<-sum(dbinom(data_long_leftout[data_long_leftout$index==mean_freq$index[i], ]$genotype, size=300, prob=mean_freq$mean_freq[i]/2, log=TRUE))
   }
 }
+
+end_time<-Sys.time()
+end_time-start_time
+
 save.image(file="Predicting_hybrid_genotypes.RData")

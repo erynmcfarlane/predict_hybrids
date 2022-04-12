@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=predict_hybrid_genotype
 #SBATCH --nodes=1
-#SBATCH --time=0-5:00:00
+#SBATCH --time=0-16:00:00
 #SBATCH --account=modelscape
 #SBATCH --mem-per-cpu=500G
 
