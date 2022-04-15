@@ -65,8 +65,8 @@ Fstats_het<-list(length = length(unique(alldata_df_6$index)))
 pvalues_het<-list(length(unique(alldata_df_6$index)))
 
 for(i in 1:length(unique(alldata_df_6$index))){
-  Fstats_het[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$q~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[7]
-  pvalues_het[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$q~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[9]
+  Fstats_het[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$het~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[7]
+  pvalues_het[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$het~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[9]
 }
 
 het_table<-cbind(as.character(unique(alldata_df_6$index)), Fstats_het, pvalues_het)
