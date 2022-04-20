@@ -7,7 +7,7 @@ library(MASS)
 ##if using local computer
 datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11_all" , pattern="*first8cols.txt.gz")
 ##if using teton
-#datafiles<-list.files("/project/evolgen/jjahner/hybrid_sims/" , pattern="*first8cols.txt.gz")
+#datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs/deme11",  pattern="*main")
 m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
 c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
 c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
@@ -15,12 +15,16 @@ mech<-str_extract(datafiles, "^([^_]+_){1}([^_])") ### where e means there's an 
 
 alldata<-list()
 
+setwd("/gscratch/buerkle/data/incompatible/runs/deme11")
+
 for(i in 1:length(datafiles)){
   alldata[[i]]<-read.table(gzfile(datafiles[i]), sep=",", header=T)
   alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
   alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
   alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
 }
+
+setwd("/gscratch/emcfar2/predicting_hybrids")
 alldata_df<-do.call(rbind.data.frame, alldata)
 summary(alldata_df)
 ### I'm not at all sure that I need this, so maybe take it out if it's not needed. 
@@ -70,3 +74,5 @@ for(i in 1:length(unique(alldata_df_6$index))){
 }
 
 het_table<-cbind(as.character(unique(alldata_df_6$index)), Fstats_het, pvalues_het)
+
+save.image("/gscratch/emcfarl2/predicting_hybrids/Fstats_individuals.RData")
