@@ -1,13 +1,12 @@
-
 require('stringr')
 
 library(stringr)
 library(MASS)
 #library(fitdistrplus)
 ##if using local computer
-datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11_all" , pattern="*first8cols.txt.gz")
+# datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims/deme11_all" , pattern="*first8cols.txt.gz")
 ##if using teton
-#datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs/deme11",  pattern="*main")
+datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs/deme11",  pattern="*main")
 m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
 c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
 c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
@@ -15,7 +14,7 @@ mech<-str_extract(datafiles, "^([^_]+_){1}([^_])") ### where e means there's an 
 
 alldata<-list()
 
-setwd("/gscratch/buerkle/data/incompatible/runs/deme11")
+# setwd("/gscratch/buerkle/data/incompatible/runs/deme11")
 
 for(i in 1:length(datafiles)){
   alldata[[i]]<-read.table(gzfile(datafiles[i]), sep=",", header=T)
@@ -41,38 +40,84 @@ plots<-list()
 alldata_df_6<-subset(alldata_df, deme %in% c(6))
 alldata_df_6$index<-paste(alldata_df_6$m, alldata_df_6$c, alldata_df_6$gen, alldata_df_6$deme)
 
-Fstats_njunct<-list(length = length(unique(alldata_df_6$index)))
-pvalues_njunct<-list(length(unique(alldata_df_6$index)))
+Fstats_njunct<-numeric(length = length(unique(alldata_df_6$index)))
+pvalues_njunct<-numeric(length(unique(alldata_df_6$index)))
 
 for(i in 1:length(unique(alldata_df_6$index))){
   Fstats_njunct[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$njunct~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[7]
   pvalues_njunct[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$njunct~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[9]
-  }
+}
 
-njunct_table<-cbind(as.character(unique(alldata_df_6$index)), Fstats_njunct, pvalues_njunct)
+njunct_table<-data.frame(model=as.character(unique(alldata_df_6$index)),
+                         Fstats=Fstats_njunct, pvalues=pvalues_njunct)
 
 #####q score####
-Fstats_q<-list(length = length(unique(alldata_df_6$index)))
-pvalues_q<-list(length(unique(alldata_df_6$index)))
+Fstats_q<-numeric(length = length(unique(alldata_df_6$index)))
+pvalues_q<-numeric(length(unique(alldata_df_6$index)))
 
 for(i in 1:length(unique(alldata_df_6$index))){
   Fstats_q[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$q~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[7]
   pvalues_q[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$q~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[9]
 }
 
-q_table<-cbind(as.character(unique(alldata_df_6$index)), Fstats_q, pvalues_q)
+q_table<-data.frame(model=as.character(unique(alldata_df_6$index)),
+                    Fstats=Fstats_q, pvalues=pvalues_q)
 
 
 #### het (big Q)####
 
-Fstats_het<-list(length = length(unique(alldata_df_6$index)))
-pvalues_het<-list(length(unique(alldata_df_6$index)))
+Fstats_het<-numeric(length = length(unique(alldata_df_6$index)))
+pvalues_het<-numeric(length(unique(alldata_df_6$index)))
 
 for(i in 1:length(unique(alldata_df_6$index))){
   Fstats_het[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$het~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[7]
   pvalues_het[[i]]<-unlist(summary(aov(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$het~as.factor(alldata_df_6[which(alldata_df_6$index==unique(alldata_df_6$index)[i]),]$rep))))[9]
 }
 
-het_table<-cbind(as.character(unique(alldata_df_6$index)), Fstats_het, pvalues_het)
+het_table<-data.frame(model=as.character(unique(alldata_df_6$index)), Fstats=Fstats_het, pvalues=pvalues_het)
 
 save.image("/gscratch/emcfarl2/predicting_hybrids/Fstats_individuals.RData")
+
+design.table<-data.frame(model=het_table$model,
+                         migration=numeric(nrow(het_table)),
+                         selection=numeric(nrow(het_table)),
+                         generation=numeric(nrow(het_table)))
+
+tmp<-matrix(as.numeric(unlist(strsplit(design.table$model, split=" "))),
+            ncol=4, byrow=TRUE)
+design.table$migration <- tmp[,1]
+design.table$selection <- tmp[,2]
+design.table$generation <- tmp[,3]
+
+library(RColorBrewer)
+
+mycolors1<-c(brewer.pal(9, "Purples"), "black")
+mycolors2<-c(brewer.pal(9, "Oranges"), "red4")
+
+par(mfrow=c(1,3), pty='s')
+plot(log10(het_table$Fstats), log10(q_table$Fstats), type='n')
+points(log10(het_table$Fstats[design.table$migration == 0.2]),
+       log10(q_table$Fstats[design.table$migration == 0.2]), pch=19,
+       col=mycolors1)
+points(log10(het_table$Fstats[design.table$migration == 0.01]),
+       log10(q_table$Fstats[design.table$migration == 0.01]), pch=19,
+       col=mycolors2)
+
+plot(log10(het_table$Fstats), log10(njunct_table$Fstats), type='n')
+points(log10(het_table$Fstats[design.table$migration == 0.2]),
+       log10(njunct_table$Fstats[design.table$migration == 0.2]), pch=19,
+       col=mycolors1)
+points(log10(het_table$Fstats[design.table$migration == 0.01]),
+       log10(njunct_table$Fstats[design.table$migration == 0.01]), pch=19,
+       col=mycolors2)
+
+plot(log10(njunct_table$Fstats), log10(q_table$Fstats), type='n')
+points(log10(njunct_table$Fstats[design.table$migration == 0.2]),
+       log10(q_table$Fstats[design.table$migration == 0.2]), pch=19,
+       col=mycolors1)
+points(log10(njunct_table$Fstats[design.table$migration == 0.01]),
+       log10(q_table$Fstats[design.table$migration == 0.01]), pch=19,
+       col=mycolors2)
+
+dev.print(pdf, "bivariate_ANOVA_F.pdf", width=8, height=3)
+
