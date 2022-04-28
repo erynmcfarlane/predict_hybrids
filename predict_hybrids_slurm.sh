@@ -7,4 +7,4 @@
 
 module load swset/2018.05 gcc/7.3.0 r/4.0.5-py27
 
-R CMD BATCH /gscratch/emcfarl2/predicting_hybrids/likelihood_of_genotypes_WIP_310322.R
+R CMD BATCH /gscratch/emcfarl2/predicting_hybrids/anova_of_genotypes_WIP_270422.R
