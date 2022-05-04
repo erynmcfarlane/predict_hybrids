@@ -15,17 +15,19 @@ library(data.table)
 
 #### as of right now, I can't even load this into R?
 
-datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs/deme11",  pattern="*main")
-m<-str_extract(datafiles, "(\\d+\\.*\\d*)")
-c<-str_match(datafiles,"c(\\d+\\.*\\d*)")[,2]
+datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
+datafiles_11<-datafiles[c(293:316)]
+basenames<-basename(datafiles_11)
+m<-str_extract(basenames, "(\\d+\\.*\\d*)")
+c<-str_match(basenames,"c(\\d+\\.*\\d*)")[,2]
 c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
-mech<-str_extract(datafiles, "^([^_]+_){1}([^_])") 
+mech<-str_extract(basenames, "^([^_]+_){1}([^_])") 
 
 alldata<-list()
-setwd("/gscratch/buerkle/data/incompatible/runs/deme11")
+setwd("/gscratch/buerkle/data/incompatible/runs")
 
-for(i in 1:length(datafiles)){
-  alldata[[i]]<-fread(datafiles[i], sep=",", header=T)
+for(i in 1:length(datafiles_11)){
+  alldata[[i]]<-fread(datafiles_11[i], sep=",", header=T)
   alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
   alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
   alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
@@ -46,16 +48,36 @@ alldata_df[which(alldata_df$deme==6), ]->data_deme_6
 
 data_long<-gather(data_deme_6, snp, genotype, l1.1:l10.51, factor_key=TRUE)
 
+###label the snps that were under selection
+data_long[which(data_long$mech %in% c("path", "path_e")),]$snp_select<-ifelse(data_long[which(data_long$data_long$mech %in% c("path", "path_e")),]$snp %in% c("l1.2","l1.20", "l1.4", "l1.40", "l1.6", "l1.60", "l1.8", "l1.80") , 'sel', 'not_sel')
+data_long[which(data_long$mech %in% c("dmi", "dmi_e")),]$snp_select<-ifelse(data_long[which(data_long$data_long$mech %in% c("dmi", "dmi_e")),]$snp %in% c("l1.4", "l1.40", "l1.6", "l1.60"), "sel", "not_sel")
+data_long[which(data_long$c==0), ]$snp_select<-'not_sel'
+
 ##more clean up
 rm(alldata_df, data_deme_6)
-#data_long$genotype/2->data_long$genotype_scale
-#data_long$genotype_scale<-ifelse(data_long$genotype_scale==0, data_long$genotype_scale+0.0001,ifelse(data_long$genotype_scale==1,data_long$genotype_scale-0.0001, data_long$genotype_scale))
 
-### test data to make sure this all works
+###only the loci under selection
 
-#test_data<-data_long[which(data_long$snp=="l1.1"),]
-#test_data[which(test_data$gen==10), ]->test_data2
+data_long[which(data_long$snp_select=='sel'),]->data_long_sel
+data_long_sel$index<-paste(data_long_sel$m, data_long_sel$c, data_long_sel$gen, data_long_sel$mech, data_long_sel$snp)
+nrow_sel<-length(unique(data_long_sel$index))
 
+Fstats_genotypes_sel<-numeric(length = length(unique(data_long_sel$index)))
+pvalues_genotypes_sel<-numeric(length(unique(data_long_sel$index)))
+
+
+for(i in 1:length(unique(data_long_sel$index))){ 
+  Fstats_genotypes_sel[[i]]<-unlist(summary(aov(data_long_sel[which(data_long_sel$index==unique(data_long_sel$index)[i]),]$genotype~as.factor(data_long_sel[which(data_long_sel$index==unique(data_long_sel$index)[i]),]$rep))))[7]
+  pvalues_genotypes_sel[[i]]<-unlist(summary(aov(data_long_sel[which(data_long_sel$index==unique(data_long_sel$index)[i]),]$genotype~as.factor(data_long_sel[which(data_long_sel$index==unique(data_long_sel$index)[i]),]$rep))))[9]
+}
+
+geno_table_sel<-data.frame(model=as.character(unique(data_long_sel$index)), Fstats=Fstats_genotypes_sel, pvalues=pvalues_genotypes_sel)
+
+save.image(file="Predicting_hybrid_genotypes.RData")
+
+
+
+#### all loci
 data_long$index<-paste(data_long$m, data_long$c, data_long$gen, data_long$mech, data_long$snp) ### took this step out of the loop because it takes a really long time and doesn't need to be done again and again
 
 nrow<-length(unique(data_long$index))
@@ -73,8 +95,9 @@ for(i in 1:length(unique(data_long$index))){
  pvalues_genotypes[[i]]<-unlist(summary(aov(data_long[which(data_long$index==unique(data_long$index)[i]),]$genotype~as.factor(data_long[which(data_long$index==unique(data_long$index)[i]),]$rep))))[9]
 }
 
+geno_table<-data.frame(model=as.character(unique(data_long$index)), Fstats=Fstats_genotypes, pvalues=pvalues_genotypes)
 
 ###clean up before saving!###
-rm(data_long, data_long_leftout)
+rm(data_long, data_long_leftout, data_long_sel, pvalues_genotypes_sel, pvalues_genotypes, Fstats_genotypes, Fstats_genotypes_sel)
 
 save.image(file="Predicting_hybrid_genotypes.RData")
