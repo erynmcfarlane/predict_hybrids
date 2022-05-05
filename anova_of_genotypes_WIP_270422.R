@@ -49,8 +49,8 @@ alldata_df[which(alldata_df$deme==6), ]->data_deme_6
 data_long<-gather(data_deme_6, snp, genotype, l1.1:l10.51, factor_key=TRUE)
 
 ###label the snps that were under selection
-data_long[which(data_long$mech %in% c("path", "path_e")),]$snp_select<-ifelse(data_long[which(data_long$data_long$mech %in% c("path", "path_e")),]$snp %in% c("l1.2","l1.20", "l1.4", "l1.40", "l1.6", "l1.60", "l1.8", "l1.80") , 'sel', 'not_sel')
-data_long[which(data_long$mech %in% c("dmi", "dmi_e")),]$snp_select<-ifelse(data_long[which(data_long$data_long$mech %in% c("dmi", "dmi_e")),]$snp %in% c("l1.4", "l1.40", "l1.6", "l1.60"), "sel", "not_sel")
+data_long[which(data_long$mech %in% c("path_m", "path_e")),]$snp_select<-ifelse(data_long[which(data_long$mech %in% c("path_m", "path_e")),]$snp %in% c("l1.2","l1.20", "l1.4", "l1.40", "l1.6", "l1.60", "l1.8", "l1.80") , 'sel', 'not_sel')
+data_long[which(data_long$mech %in% c("dmi_m", "dmi_e")),]$snp_select<-ifelse(data_long[which(data_long$mech %in% c("dmi_m", "dmi_e")),]$snp %in% c("l1.4", "l1.40", "l1.6", "l1.60"), "sel", "not_sel")
 data_long[which(data_long$c==0), ]$snp_select<-'not_sel'
 
 ##more clean up
