@@ -36,7 +36,7 @@ alldata_df<-do.call(rbind.data.frame, alldata)
 ####clean up
 rm(alldata)
 #summary(alldata_df)
-
+### skip to the bottom from here for doro's plots
 alldata_df[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_3snps
 
 data_long<-gather(alldata_df_3snps, snp, genotype, l1.4:l2.4, factor_key=TRUE)
@@ -108,7 +108,7 @@ anova(lm(genotype~rep+mech+c+m+gen, data=snp_sel_6))
 anova(lm(genotype~rep+mech+c+m+gen, data=snp_ld_6))
 anova(lm(genotype~rep+mech+c+m+gen, data=snp_nosel_6))
 
-anova(lm(as.factor(genotype)~snp+rep+snp:rep+mech+c+m+gen, data=data_long))
+anova(lm(genotype~snp+rep+snp:rep+mech+c+m+gen, data=data_long))
 
 #Analysis of Variance Table
 #### results from when I ran this on teton
@@ -122,3 +122,39 @@ anova(lm(as.factor(genotype)~snp+rep+snp:rep+mech+c+m+gen, data=data_long))
 #gen              1       29   28.87  33.9605 5.624e-09 ***
 #snp:rep          2      111   55.45  65.2163 < 2.2e-16 ***
 #Residuals 23759988 20200945    0.85
+
+
+### might want to look at specific cases - tukey?
+###double check that I only have deme 6!
+Fstats<-list()
+pvalues<-list()
+for(i in 1:length(unique(data_long[which(data_long$gen==10 & data_long$deme==6),]$index))){
+  Fstats[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,4]
+  pvalues[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,5]
+}
+
+
+
+
+#### want to replicate figure 3, A, top and middle rows from Lindtke and Buerkle 2015
+### q= genotype/2
+### Q = genotype = 1 = 1, if genotype=0 or 2, = 0
+
+alldata_df[which(alldata_df$deme==6), ]->data_deme_6
+data_deme_6[which(data_deme_6$gen==10),]->data_deme_6_gen_10
+data_long<-gather(data_deme_6_gen_10, snp, genotype, l1.1:l10.51, factor_key=TRUE)
+
+
+#### this puts each of the mechanisms in the appropriate order for the plots###
+data_long$mech<-relevel(data_long$mech, "path_e")
+data_long$mech<-relevel(data_long$mech, "path_m")
+data_long$mech<-relevel(data_long$mech, "dmi_e")
+data_long$mech<-relevel(data_long$mech, "dmi_m")
+
+data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:digit:]]+\\.*[[:digit:]]*"))))
+
+data_long$q<-data_long$genotype/2
+### still didn't work. Don't know why
+plot1<-ggplot(data_long, aes(q~snp_num, colour=rep))+geom_line()+facet_grid(mech~m+c)+theme_bw()
+
+ggsave("plot1.png")
