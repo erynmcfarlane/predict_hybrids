@@ -43,7 +43,7 @@ data_long<-gather(alldata_df_3snps, snp, genotype, l1.4:l2.4, factor_key=TRUE)
 
 data_long$index<-paste(data_long$deme, data_long$m, data_long$c, data_long$gen, data_long$mech)
 
-length(unique(data_long[which(data_long$deme==6)],$index))
+length(unique(data_long[which(data_long$deme==6),]$index))
 
 #### this puts each of the mechanisms in the appropriate order for the plots###
 data_long$mech<-relevel(data_long$mech, "path_e")
@@ -76,7 +76,49 @@ summaries<-summarySE(data_long[which(data_long$deme==6 & data_long$gen==100), ],
 deme6_gen100_means<-ggplot(summaries, aes(as.factor(genotype),q, colour=snp))+geom_boxplot()+coord_flip()+facet_grid(mech~m+c)+theme_bw()
 ggsave("deme6_gen100_means.png")
 
+### do this again, but do densities of each loci across 3x24 panel plots
+
+snp_sel_densities<-ggplot(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ], aes(genotype, colour=as.factor(rep)))+geom_density()+facet_grid(mech~m+c)+theme_bw()
+ggsave("snp_sel_densities10.png")
+snp_ld_densities<-ggplot(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.10'), ], aes(genotype, colour=as.factor(rep)))+geom_density()+facet_grid(mech~m+c)+theme_bw()
+ggsave("snp_ld_densities10.png")
+snp_nosel_densities<-ggplot(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l2.4'), ], aes(genotype, colour=as.factor(rep)))+geom_density()+facet_grid(mech~m+c)+theme_bw()
+ggsave("snp_nosel_densities10.png")
 
 
-### do this again, but do densities of each loci accross 3x24 panel plots
+snp_sel_densities<-ggplot(data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.4'), ], aes(genotype, colour=as.factor(rep)))+geom_density()+facet_grid(mech~m+c)+theme_bw()
+ggsave("snp_sel_densities100.png")
+snp_ld_densities<-ggplot(data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.10'), ], aes(genotype, colour=as.factor(rep)))+geom_density()+facet_grid(mech~m+c)+theme_bw()
+ggsave("snp_ld_densities100.png")
+snp_nosel_densities<-ggplot(data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l2.4'), ], aes(genotype, colour=as.factor(rep)))+geom_density()+facet_grid(mech~m+c)+theme_bw()
+ggsave("snp_nosel_densities100.png")
 
+
+###want to compare F for each of these snps compare within 
+
+unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ]$rep)))[7]
+unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.10'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ]$rep)))[7]
+unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l2.4'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ]$rep)))[7]
+
+snp_sel_6<-data_long[which(data_long$deme==6 & data_long$snp=='l1.4'), ]
+snp_ld_6<-data_long[which(data_long$deme==6 & data_long$snp=='l1.10'), ]
+snp_nosel_6<-data_long[which(data_long$deme==6 &  data_long$snp=='l2.4'), ]
+
+anova(lm(genotype~rep+mech+c+m+gen, data=snp_sel_6))
+anova(lm(genotype~rep+mech+c+m+gen, data=snp_ld_6))
+anova(lm(genotype~rep+mech+c+m+gen, data=snp_nosel_6))
+
+anova(lm(as.factor(genotype)~snp+rep+snp:rep+mech+c+m+gen, data=data_long))
+
+#Analysis of Variance Table
+#### results from when I ran this on teton
+#Response: genotype
+#Df   Sum Sq Mean Sq  F value    Pr(>F)    
+#snp              2       29   14.57  17.1378 3.607e-08 ***
+#rep              1        2    2.19   2.5737    0.1087    
+#mech             3     1312  437.43 514.4983 < 2.2e-16 ***
+# c                1       79   78.77  92.6429 < 2.2e-16 ***
+# m                1       98   97.81 115.0399 < 2.2e-16 ***
+#gen              1       29   28.87  33.9605 5.624e-09 ***
+#snp:rep          2      111   55.45  65.2163 < 2.2e-16 ***
+#Residuals 23759988 20200945    0.85
