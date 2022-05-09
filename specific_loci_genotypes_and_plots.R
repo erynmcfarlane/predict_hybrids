@@ -152,9 +152,16 @@ data_long$mech<-relevel(data_long$mech, "dmi_e")
 data_long$mech<-relevel(data_long$mech, "dmi_m")
 
 data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:digit:]]+\\.*[[:digit:]]*"))))
-
+summary(data_long$snp_num)
 data_long$q<-data_long$genotype/2
-### still didn't work. Don't know why
-plot1<-ggplot(data_long, aes(q~snp_num, colour=rep))+geom_line()+facet_grid(mech~m+c)+theme_bw()
+data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
 
+### still didn't work. Don't know why
+###let's do a basic scatterplot
+plot0<-ggplot(data_long,  aes(snp_num,q, colour=rep))+geom_point()+theme_bw()
+ggsave("plot0.png")
+plot1<-ggplot(data_long, aes(snp_num, q,colour=rep))+geom_line(aes(linetype=rep))+facet_grid(mech~m+c)+theme_bw()
 ggsave("plot1.png")
+
+### Do I want means of individuals within reps, because right now there's still so much data - could be why it's taking forever to even save!
+summaries<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp','genotype'), na.rm=FALSE, conf.interval=.95)
