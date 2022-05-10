@@ -64,7 +64,7 @@ ggsave("deme6_gen100.png")
 
 
 
-source(summarySE.R)
+source('summarySE.R')
 
 ###this shows each individual genotype, but doesn't show the variation among replicates
 ##happy function that gives me that gives me means and SEs for each of my groups.
@@ -140,6 +140,8 @@ for(i in 1:length(unique(data_long[which(data_long$gen==10 & data_long$deme==6),
 ### q= genotype/2
 ### Q = genotype = 1 = 1, if genotype=0 or 2, = 0
 
+
+#####GENERATION 10#####
 alldata_df[which(alldata_df$deme==6), ]->data_deme_6
 data_deme_6[which(data_deme_6$gen==10),]->data_deme_6_gen_10
 data_long<-gather(data_deme_6_gen_10, snp, genotype, l1.1:l10.51, factor_key=TRUE)
@@ -155,13 +157,44 @@ data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:d
 summary(data_long$snp_num)
 data_long$q<-data_long$genotype/2
 data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
+### Do I want means of individuals within reps, because right now there's still so much data - could be why it's taking forever to even save!
+summaries_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
 
-### still didn't work. Don't know why
-###let's do a basic scatterplot
-plot0<-ggplot(data_long,  aes(snp_num,q, colour=rep))+geom_point()+theme_bw()
-ggsave("plot0.png")
-plot1<-ggplot(data_long, aes(snp_num, q,colour=rep))+geom_line(aes(linetype=rep))+facet_grid(mech~m+c)+theme_bw()
-ggsave("plot1.png")
+plot_sum<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
+plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")
+ggsave("plotsum_admixture_100.png")
+
+summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
+plot_sum_Q<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
+plot_sum_Q<-plot_sum+xlab("Chromosomes")+ylab("Intersource Ancestry")
+ggsave("plotsum_Q_100.png")
+
+
+#### GENERATION 100####
+alldata_df[which(alldata_df$deme==6), ]->data_deme_6
+data_deme_6[which(data_deme_6$gen==100),]->data_deme_6_gen_100
+data_long<-gather(data_deme_6_gen_100, snp, genotype, l1.1:l10.51, factor_key=TRUE)
+
+
+#### this puts each of the mechanisms in the appropriate order for the plots###
+data_long$mech<-relevel(data_long$mech, "path_e")
+data_long$mech<-relevel(data_long$mech, "path_m")
+data_long$mech<-relevel(data_long$mech, "dmi_e")
+data_long$mech<-relevel(data_long$mech, "dmi_m")
+
+data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:digit:]]+\\.*[[:digit:]]*"))))
+summary(data_long$snp_num)
+data_long$q<-data_long$genotype/2
+data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
 
 ### Do I want means of individuals within reps, because right now there's still so much data - could be why it's taking forever to even save!
-summaries<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp','genotype'), na.rm=FALSE, conf.interval=.95)
+summaries_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
+
+plot_sum<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
+plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")
+ggsave("plotsum_admixture_100.png")
+
+summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
+plot_sum_Q<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
+plot_sum_Q<-plot_sum+xlab("Chromosomes")+ylab("Intersource Ancestry")
+ggsave("plotsum_Q_100.png")
