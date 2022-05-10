@@ -36,7 +36,9 @@ alldata_df<-do.call(rbind.data.frame, alldata)
 ####clean up
 rm(alldata)
 #summary(alldata_df)
-### skip to the bottom from here for doro's plots
+### skip to the bottom from here for doro's plots (line 139) ####
+
+### skip down for multinomial clines (line 209) ####
 alldata_df[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_3snps
 
 data_long<-gather(alldata_df_3snps, snp, genotype, l1.4:l2.4, factor_key=TRUE)
@@ -198,3 +200,35 @@ summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 
 plot_sum_Q<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
 plot_sum_Q<-plot_sum+xlab("Chromosomes")+ylab("Intersource Ancestry")
 ggsave("plotsum_Q_100.png")
+
+
+
+
+### want to plot multinomial clines of genotype~q ###
+
+library(introgress)
+
+### want to use introgress::clines.plot, I think ###
+
+### might need to build 'cline.data' first, what does this look like?
+###let's build alldata_df for deme 6, gen 10
+alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
+
+### I want to do this separately for the 24 categories we have! ###
+alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
+genomic.clines<-list()
+
+for(i in 1:length(unique(alldata_df_6_10$index))){
+introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(9:518)]
+chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
+hi.index<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q
+loci.data<-matrix(nrow=length(introgress.data), ncol=3)
+dim(loci.data)<-c(510, 3)
+loci.data[,1]<-colnames(introgress.data)
+loci.data[,2]<-'C'
+loci.data[,3]<-chromosome
+genomic.clines[[i]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q, loci.data=loci.data)
+clines.plot<-clines.plot(genomic.clines)
+}
+
+png(clines.plot, file="clines_plot_6_10.png")
