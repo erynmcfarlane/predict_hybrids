@@ -162,12 +162,12 @@ summaries_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 
 
 plot_sum<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
 plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")
-ggsave("plotsum_admixture_100.png")
+ggsave("plotsum_admixture_10.png")
 
 summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
 plot_sum_Q<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
 plot_sum_Q<-plot_sum+xlab("Chromosomes")+ylab("Intersource Ancestry")
-ggsave("plotsum_Q_100.png")
+ggsave("plotsum_Q_10.png")
 
 
 #### GENERATION 100####
