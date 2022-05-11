@@ -38,30 +38,34 @@ rm(alldata)
 ### skip down for multinomial clines (line 209) ####
 
 library(introgress)
-
+source("genomic.cline.plot.R")
 ### want to use introgress::clines.plot, I think ###
 
 ### might need to build 'cline.data' first, what does this look like?
 ###let's build alldata_df for deme 6, gen 10
 alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
 
+###I'm not sure it makes sense using all 510 snps for this. let's do just the 3?
+alldata_df_6_10[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_6_10
+
 ### I want to do this separately for the 24 categories we have! ###
 alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
 genomic.clines<-list() ##oh no, a list!
 
-#for(i in 1:length(unique(alldata_df_6_10$index))){
-for(i in 1:3){
-  introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(9:518)]
+png(file="genomic_cline_plots.png", width=600, height=600, units='px')
+par(mfrow=c(4,6))
+for(i in 1:length(unique(alldata_df_6_10$index))){
+  introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(12:14)]
   chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
   hi.index<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q
   loci.data<-matrix(nrow=length(introgress.data), ncol=3)
-  dim(loci.data)<-c(510, 3)
+  dim(loci.data)<-c(3, 3)
   loci.data[,1]<-colnames(introgress.data)
   loci.data[,2]<-'C'
   loci.data[,3]<-chromosome
   genomic.clines[[i]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q, loci.data=loci.data)
-  clines.plot<-composite.clines(genomic.clines[[i]], pdf=FALSE)
-  print(png(clines.plot, file=paste("clines, [i], .png"))
+  genomic.cline.plot(genomic.clines[[i]])
 }
+dev.off()
 clines.plot<-composite.clines(genomic.clines[[i]], pdf=FALSE)
-png(clines.plot, file="clines_plot_6_10.png")
+
