@@ -5,12 +5,6 @@ library(tidyverse)
 library(MASS)
 library(data.table)
 
-### as of right now, I can't make this happen on my home computer. Needs to be run on Teton
-#datafiles<-list.files("~/Google Drive/Replicate Hybrid zone review/Predicting_Hybrids_analysis/hybrid_sims" , pattern="*main")
-### on teton
-
-#### as of right now, I can't even load this into R?
-
 datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
 datafiles_11<-datafiles[c(293:316)]
 basenames<-basename(datafiles_11)
@@ -48,13 +42,21 @@ alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
 ###I'm not sure it makes sense using all 510 snps for this. let's do just the 3?
 alldata_df_6_10[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_6_10
 
+alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_e")
+alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_m")
+alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi_e")
+alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi_m")
+
 ### I want to do this separately for the 24 categories we have! ###
 alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
+alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
+
 genomic.clines<-list() ##oh no, a list!
 
 png(file="genomic_cline_plots.png", width=1200, height=1200, units='px')
-par(mfrow=c(4,6),  oma = c(5, 5, 2, 2), mai=c(0.3, 0.3, 0.1, 0.1))
-for(i in 1:length(unique(alldata_df_6_10$index))){
+par(mfrow=c(4,6),  oma = c(5, 5, 2, 2), mai=c(0.3, 0.3, 0.1, 0.1), mar=c(5,5,1,1))
+for(i in length(unique(alldata_df_6_10$index)):1){
+  main_label<-unique(alldata_df_6_10$index)[i]
   introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(12:14)]
   chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
   hi.index<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q
@@ -67,7 +69,11 @@ for(i in 1:length(unique(alldata_df_6_10$index))){
   genomic.cline.plot(genomic.clines[[i]])
 }
 mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
-mtext('Probability of Ancestry', side = 2, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
 
-
+#### need to use this to get the order I want!!
+layout(matrix(c(25,25,25,25,1,2,3,4,5,6,
+                25,25,25,25,7,8,9,10,11,12,
+                25,25,25,25,13,14,15,16,17,18,
+                25,25,25,25,19,20,21,22,23,24), 4, 10, byrow=TRUE))
