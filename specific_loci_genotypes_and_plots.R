@@ -159,76 +159,28 @@ data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:d
 summary(data_long$snp_num)
 data_long$q<-data_long$genotype/2
 data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
+
 ### Do I want means of individuals within reps, because right now there's still so much data - could be why it's taking forever to even save!
 summaries_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
-
-plot_sum<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
-plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")
+summaries_q$partial_index<-paste(summaries_q$m, summaries_q$c, summaries_q$mech, summaries_q$snp_num)
+summaries_mean_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
+summaries_mean_q$partial_index<-paste(summaries_mean_q$m, summaries_mean_q$c, summaries_mean_q$mech, summaries_mean_q$snp_num)
+summaries_mean_q<-summaries_mean_q[,c(10, 6)]
+names(summaries_mean_q)<-c("partial_index", "mean_q")
+summaries_q<-merge(summaries_q,summaries_mean_q, by='partial_index')
+plot_sum<-ggplot(summaries_q[which(summaries_q$snp_num<2.5),])+geom_line(aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(snp_num, mean_q), colour='black')+facet_grid(mech~m+c)+theme_bw()
+plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")+guides(colour=guide_legend(title="Replicate"))
 ggsave("plotsum_admixture_10.png")
 
-summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
-plot_sum_Q<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
-plot_sum_Q<-plot_sum+xlab("Chromosomes")+ylab("Intersource Ancestry")
-ggsave("plotsum_Q_10.png")
-
-
-#### GENERATION 100####
-alldata_df[which(alldata_df$deme==6), ]->data_deme_6
-data_deme_6[which(data_deme_6$gen==100),]->data_deme_6_gen_100
-data_long<-gather(data_deme_6_gen_100, snp, genotype, l1.1:l10.51, factor_key=TRUE)
-
-
-#### this puts each of the mechanisms in the appropriate order for the plots###
-data_long$mech<-relevel(data_long$mech, "path_e")
-data_long$mech<-relevel(data_long$mech, "path_m")
-data_long$mech<-relevel(data_long$mech, "dmi_e")
-data_long$mech<-relevel(data_long$mech, "dmi_m")
-
-data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:digit:]]+\\.*[[:digit:]]*"))))
-summary(data_long$snp_num)
-data_long$q<-data_long$genotype/2
-data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
-
-### Do I want means of individuals within reps, because right now there's still so much data - could be why it's taking forever to even save!
-summaries_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
-
-plot_sum<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
-plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")
-ggsave("plotsum_admixture_100.png")
 
 summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
-plot_sum_Q<-ggplot(summaries[which(summaries$snp_num<5.5),], aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(linetype=as.factor(rep)))+facet_grid(mech~m+c)+theme_bw()
-plot_sum_Q<-plot_sum+xlab("Chromosomes")+ylab("Intersource Ancestry")
-ggsave("plotsum_Q_100.png")
+summaries_Q$partial_index<-paste(summaries_Q$m, summaries_Q$c, summaries_Q$mech, summaries_Q$snp_num)
+summaries_mean_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
+summaries_mean_Q$partial_index<-paste(summaries_mean_Q$m, summaries_mean_Q$c, summaries_mean_Q$mech, summaries_mean_Q$snp_num)
+summaries_mean_Q<-summaries_mean_Q[,c(10, 6)]
+names(summaries_mean_Q)<-c("partial_index", "mean_Q")
+summaries_Q<-merge(summaries_Q,summaries_mean_Q, by='partial_index')
 
-
-
-
-### want to plot multinomial clines of genotype~q ###
-
-library(introgress)
-
-### want to use introgress::clines.plot, I think ###
-
-### might need to build 'cline.data' first, what does this look like?
-###let's build alldata_df for deme 6, gen 10
-alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
-
-### I want to do this separately for the 24 categories we have! ###
-alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
-genomic.clines<-list()
-
-for(i in 1:length(unique(alldata_df_6_10$index))){
-introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(9:518)]
-chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
-hi.index<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q
-loci.data<-matrix(nrow=length(introgress.data), ncol=3)
-dim(loci.data)<-c(510, 3)
-loci.data[,1]<-colnames(introgress.data)
-loci.data[,2]<-'C'
-loci.data[,3]<-chromosome
-genomic.clines[[i]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q, loci.data=loci.data)
-clines.plot<-clines.plot(genomic.clines)
-}
-
-png(clines.plot, file="clines_plot_6_10.png")
+plot_sum_Q<-ggplot(summaries_Q[which(summaries_Q$snp_num<2.5),])+geom_line(aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(snp_num, mean_Q), colour='black')+facet_grid(mech~m+c)+theme_bw()
+plot_sum_Q<-plot_sum_Q+xlab("Chromosomes")+ylab("Intersource Ancestry")+guides(colour=guide_legend(title="Replicate"))
+ggsave("plotsum_intersource_10.png")

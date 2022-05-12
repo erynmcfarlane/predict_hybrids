@@ -52,8 +52,8 @@ alldata_df_6_10[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_6_10
 alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
 genomic.clines<-list() ##oh no, a list!
 
-png(file="genomic_cline_plots.png", width=600, height=600, units='px')
-par(mfrow=c(4,6))
+png(file="genomic_cline_plots.png", width=1200, height=1200, units='px')
+par(mfrow=c(4,6),  oma = c(5, 5, 2, 2), mai=c(0.3, 0.3, 0.1, 0.1))
 for(i in 1:length(unique(alldata_df_6_10$index))){
   introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(12:14)]
   chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
@@ -66,6 +66,8 @@ for(i in 1:length(unique(alldata_df_6_10$index))){
   genomic.clines[[i]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q, loci.data=loci.data)
   genomic.cline.plot(genomic.clines[[i]])
 }
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Ancestry', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
-clines.plot<-composite.clines(genomic.clines[[i]], pdf=FALSE)
+
 
