@@ -30,7 +30,8 @@ alldata_df<-do.call(rbind.data.frame, alldata)
 rm(alldata)
 
 ### skip down for multinomial clines (line 209) ####
-
+#save.image("introgress_working.RData")
+#load("introgress_working.RData")
 library(introgress)
 source("genomic.cline.plot.R")
 ### want to use introgress::clines.plot, I think ###
@@ -54,9 +55,12 @@ alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
 genomic.clines<-list() ##oh no, a list!
 
 png(file="genomic_cline_plots.png", width=1200, height=1200, units='px')
-par(mfrow=c(4,6),  oma = c(5, 5, 2, 2), mai=c(0.3, 0.3, 0.1, 0.1), mar=c(5,5,1,1))
-for(i in length(unique(alldata_df_6_10$index)):1){
-  main_label<-unique(alldata_df_6_10$index)[i]
+par(mfrow=c(4,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
+layout(matrix(c(21,19,20,24,22,23,
+                9,7,8,12,10,11,
+                3,1,2,6,4,5,
+                15,13,14,18,16,17), 4, 6, byrow=TRUE))
+for(i in 1:length(unique(alldata_df_6_10$index))){
   introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),c(12:14)]
   chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
   hi.index<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q
@@ -67,13 +71,22 @@ for(i in length(unique(alldata_df_6_10$index)):1){
   loci.data[,3]<-chromosome
   genomic.clines[[i]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$q, loci.data=loci.data)
   genomic.cline.plot(genomic.clines[[i]])
+  if (i %in% c(21, 19, 20, 24, 22, 23))
+    {
+    mtext(paste0("m = ", alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$m[i]), line=2, cex=1.5)
+    mtext(paste0("c = ", alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$c[i]), line=0.25, cex=1.5)
+    }
+  
+  if (i %in% c(23, 11, 5, 17))
+  {
+    if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="dmi_m") { mtext("dmi", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="path_m") { mtext("path", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
+    }
 }
+
 mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
 
-#### need to use this to get the order I want!!
-layout(matrix(c(25,25,25,25,1,2,3,4,5,6,
-                25,25,25,25,7,8,9,10,11,12,
-                25,25,25,25,13,14,15,16,17,18,
-                25,25,25,25,19,20,21,22,23,24), 4, 10, byrow=TRUE))
