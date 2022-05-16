@@ -58,6 +58,7 @@ alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
 genomic.clines<-list() ##oh no, a list!
 
 png(file="genomic_cline_plots.png", width=1200, height=1200, units='px')
+#png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
 par(mfrow=c(4,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(21,19,20,24,22,23,
                 9,7,8,12,10,11,
