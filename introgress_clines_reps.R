@@ -76,6 +76,7 @@ for(i in 1:length(unique(alldata_df_6_10$index))){
   loci.data[,3]<-chromosome
   genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
     }
+  plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
   genomic.cline.plot(genomic.clines.reps)
   if (i %in% c(21, 19, 20, 24, 22, 23))
     {
