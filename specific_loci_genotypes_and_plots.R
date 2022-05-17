@@ -102,6 +102,13 @@ unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==10 & data_
 unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.10'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ]$rep)))[7]
 unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l2.4'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==10 & data_long$snp=='l1.4'), ]$rep)))[7]
 
+unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.4'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.4'), ]$rep)))[7]
+unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.10'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.4'), ]$rep)))[7]
+unlist(summary(aov(data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l2.4'), ]$genotype~data_long[which(data_long$deme==6 & data_long$gen==100 & data_long$snp=='l1.4'), ]$rep)))[7]
+
+
+
+
 snp_sel_6<-data_long[which(data_long$deme==6 & data_long$snp=='l1.4'), ]
 snp_ld_6<-data_long[which(data_long$deme==6 & data_long$snp=='l1.10'), ]
 snp_nosel_6<-data_long[which(data_long$deme==6 &  data_long$snp=='l2.4'), ]
@@ -136,7 +143,12 @@ for(i in 1:length(unique(data_long[which(data_long$gen==10 & data_long$deme==6),
 }
 
 
-
+Fstats100<-list()
+pvalues100<-list()
+for(i in 1:length(unique(data_long[which(data_long$gen==100 & data_long$deme==6),]$index))){
+  Fstats100[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,4]
+  pvalues100[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,5]
+}
 
 #### want to replicate figure 3, A, top and middle rows from Lindtke and Buerkle 2015
 ### q= genotype/2
@@ -154,33 +166,37 @@ data_long$mech<-relevel(data_long$mech, "path_e")
 data_long$mech<-relevel(data_long$mech, "path_m")
 data_long$mech<-relevel(data_long$mech, "dmi_e")
 data_long$mech<-relevel(data_long$mech, "dmi_m")
+data_long$mech<-ifelse(data_long$mech=="dmi_m", "dmi", ifelse(data_long$mech=="path_m", "path",ifelse(data_long$mech=="path_e", 'path_e', "dmi_e")))
 
 data_long$snp_num<-(as.numeric(unlist(str_extract(as.factor(data_long$snp),"[[:digit:]]+\\.*[[:digit:]]*"))))
 summary(data_long$snp_num)
 data_long$q<-data_long$genotype/2
 data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
 
-### Do I want means of individuals within reps, because right now there's still so much data - could be why it's taking forever to even save!
-summaries_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
+library(MetBrewer)
+library(patchwork)
+colours=met.brewer(name="OKeeffe1", n=20, type="continuous")
+data_long_noE<-data_long[which(data_long$mech %in% c("dmi", "path")),]
+summaries_q<-summarySE(data_long_noE, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_q$partial_index<-paste(summaries_q$m, summaries_q$c, summaries_q$mech, summaries_q$snp_num)
-summaries_mean_q<-summarySE(data_long, measurevar='q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
+summaries_mean_q<-summarySE(data_long_noE, measurevar='q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_mean_q$partial_index<-paste(summaries_mean_q$m, summaries_mean_q$c, summaries_mean_q$mech, summaries_mean_q$snp_num)
 summaries_mean_q<-summaries_mean_q[,c(10, 6)]
 names(summaries_mean_q)<-c("partial_index", "mean_q")
 summaries_q<-merge(summaries_q,summaries_mean_q, by='partial_index')
-plot_sum<-ggplot(summaries_q[which(summaries_q$snp_num<2.5),])+geom_line(aes(snp_num, q, colour=as.factor(rep)))+geom_line(aes(snp_num, mean_q), colour='black')+facet_grid(mech~m+c)+theme_bw()
-plot_sum<-plot_sum+xlab("Chromosomes")+ylab("Admixture Proportion")+guides(colour=guide_legend(title="Replicate"))
-ggsave("plotsum_admixture_10.png")
-
-
-summaries_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
+plot_sum<-ggplot(summaries_q[which(summaries_q$snp_num<2.5),])+geom_line(aes(snp_num, q, colour=as.factor(rep)))+scale_colour_manual(values=colours)+geom_line(aes(snp_num, mean_q), colour='black')+facet_grid(mech~m+c)+theme_bw()
+plot_sum<-plot_sum+ylab("Admixture Proportion")+theme(axis.ticks.x = element_blank(),axis.text.x = element_blank(), axis.title.x=element_blank())+guides(fill="none")+theme(legend.position = "none") 
+                                                            
+summaries_Q<-summarySE(data_long_noE, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_Q$partial_index<-paste(summaries_Q$m, summaries_Q$c, summaries_Q$mech, summaries_Q$snp_num)
-summaries_mean_Q<-summarySE(data_long, measurevar='Q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
+summaries_mean_Q<-summarySE(data_long_noE, measurevar='Q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_mean_Q$partial_index<-paste(summaries_mean_Q$m, summaries_mean_Q$c, summaries_mean_Q$mech, summaries_mean_Q$snp_num)
 summaries_mean_Q<-summaries_mean_Q[,c(10, 6)]
 names(summaries_mean_Q)<-c("partial_index", "mean_Q")
 summaries_Q<-merge(summaries_Q,summaries_mean_Q, by='partial_index')
 
-plot_sum_Q<-ggplot(summaries_Q[which(summaries_Q$snp_num<2.5),])+geom_line(aes(snp_num, Q, colour=as.factor(rep)))+geom_line(aes(snp_num, mean_Q), colour='black')+facet_grid(mech~m+c)+theme_bw()
-plot_sum_Q<-plot_sum_Q+xlab("Chromosomes")+ylab("Intersource Ancestry")+guides(colour=guide_legend(title="Replicate"))
-ggsave("plotsum_intersource_10.png")
+plot_sum_Q<-ggplot(summaries_Q[which(summaries_Q$snp_num<2.5),])+geom_line(aes(snp_num, Q, colour=as.factor(rep)))+scale_colour_manual(values=colours)+geom_line(aes(snp_num, mean_Q), colour='black')+facet_grid(mech~m+c)+theme_bw()+ theme(strip.text.x = element_blank())
+plot_sum_Q<-plot_sum_Q+xlab("Chromosomes")+ylab("Intersource Ancestry")+guides(fill="none")+theme(legend.position = "none") 
+plot_sum/plot_sum_Q
+
+ggsave("plotsum_admix_intersource_10.png")
