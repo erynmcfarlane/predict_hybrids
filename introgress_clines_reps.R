@@ -42,34 +42,35 @@ alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
 
 ###I'm not sure it makes sense using all 510 snps for this. let's do just the 3?
 alldata_df_6_10[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_6_10
+alldata_df_6_10$mech<-as.factor(ifelse(alldata_df_6_10$mech=="dmi_m", "dmi", ifelse(alldata_df_6_10$mech=="path_m", "path",ifelse(alldata_df_6_10$mech=="path_e", 'path_e', "dmi_e"))))
 
 alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_e")
-alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_m")
+alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path")
 alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi_e")
-alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi_m")
+alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi")
 
 ### I want to do this separately for the 24 categories we have! ###
 alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
 alldata_df_6_10$index_reps<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech, alldata_df_6_10$rep)
 alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
 
+alldata_df_6_10_noE<-alldata_df_6_10[which(alldata_df_6_10$mech %in% c("dmi", "path")),]
 
 ##### this is really close, just keep on it!
 genomic.clines<-list() ##oh no, a list!
-
-png(file="genomic_cline_plots.png", width=1200, height=1200, units='px')
-#png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
-par(mfrow=c(4,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
-layout(matrix(c(21,19,20,24,22,23,
-                9,7,8,12,10,11,
-                3,1,2,6,4,5,
-                15,13,14,18,16,17), 4, 6, byrow=TRUE))
-for(i in 1:length(unique(alldata_df_6_10$index))){
+colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
+#png(file="genomic_cline_plots1.4.png", width=1200, height=1200, units='px')
+#png(file="genomic_cline_plots1.10.png", width=1200, height=1200, units='px')
+png(file="genomic_cline_plots2.40.png", width=1200, height=1200, units='px')
+par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
+layout(matrix(c(9,7,8,12,10,11,
+                3,1,2,6,4,5), 2, 6, byrow=TRUE))
+for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   genomic.clines.reps<-list()
     for(j in 1:20){
-  introgress.data<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i] & alldata_df_6_10$rep==j),c(12:14)]
+  introgress.data<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),c(12:14)]
   chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
-  hi.index<-alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i] & alldata_df_6_10$rep==j),]$q
+  hi.index<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),]$q
   loci.data<-matrix(nrow=length(introgress.data), ncol=3)
   dim(loci.data)<-c(3, 3)
   loci.data[,1]<-colnames(introgress.data)
@@ -79,18 +80,18 @@ for(i in 1:length(unique(alldata_df_6_10$index))){
     }
   plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
   genomic.cline.plot(genomic.clines.reps)
-  if (i %in% c(21, 19, 20, 24, 22, 23))
+  if (i %in% c(9,7,8,12,10,11))
     {
-    mtext(paste0("m = ", alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$m[i]), line=2, cex=1.5)
-    mtext(paste0("c = ", alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$c[i]), line=0.25, cex=1.5)
+    mtext(paste0("m = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$m[i]), line=2, cex=1.5)
+    mtext(paste0("c = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$c[i]), line=0.25, cex=1.5)
     }
   
-  if (i %in% c(23, 11, 5, 17))
+  if (i %in% c(11,5))
   {
-    if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="dmi_m") { mtext("dmi", side=4, line=1.25, cex=1.5) }
-    else if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
-    else if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="path_m") { mtext("path", side=4, line=1.25, cex=1.5) }
-    else if (alldata_df_6_10[which(alldata_df_6_10$index==unique(alldata_df_6_10$index)[i]),]$mech[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
+    if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
     }
 }
 
