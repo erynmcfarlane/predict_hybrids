@@ -4,6 +4,8 @@
 library(tidyverse)
 library(MASS)
 library(data.table)
+library(MetBrewer)
+library(introgress)
 
 datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
 datafiles_11<-datafiles[c(293:316)]
@@ -32,7 +34,7 @@ rm(alldata)
 ### skip down for multinomial clines (line 209) ####
 #save.image("introgress_working.RData")
 #load("introgress_working.RData")
-library(introgress)
+
 source("genomic.cline.plot.reps.R")
 ### want to use introgress::clines.plot, I think ###
 
@@ -61,7 +63,7 @@ genomic.clines<-list() ##oh no, a list!
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
 #png(file="genomic_cline_plots1.4.png", width=1200, height=1200, units='px')
 #png(file="genomic_cline_plots1.10.png", width=1200, height=1200, units='px')
-png(file="genomic_cline_plots2.40.png", width=1200, height=1200, units='px')
+png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(9,7,8,12,10,11,
                 3,1,2,6,4,5), 2, 6, byrow=TRUE))
@@ -79,6 +81,7 @@ for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
     }
   plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
+  rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
   genomic.cline.plot(genomic.clines.reps)
   if (i %in% c(9,7,8,12,10,11))
     {

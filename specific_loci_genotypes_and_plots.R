@@ -117,42 +117,27 @@ anova(lm(genotype~rep+mech+c+m+gen, data=snp_sel_6))
 anova(lm(genotype~rep+mech+c+m+gen, data=snp_ld_6))
 anova(lm(genotype~rep+mech+c+m+gen, data=snp_nosel_6))
 
-anova(lm(genotype~snp+rep+snp:rep+mech+c+m+gen, data=data_long))
-
+anova<-aov(genotype~snp+as.factor(rep)+snp:as.factor(rep)+gen+snp:gen+mech+c+m, data=data_long[which(data_long$deme==6),])
+###think a little bit about what exactly you want in here!
+Tukey<-TukeyHSD(anova)
 #Analysis of Variance Table
 #### results from when I ran this on teton
-#Response: genotype
-#Df   Sum Sq Mean Sq  F value    Pr(>F)    
-#snp              2       29   14.57  17.1378 3.607e-08 ***
-#rep              1        2    2.19   2.5737    0.1087    
-#mech             3     1312  437.43 514.4983 < 2.2e-16 ***
-# c                1       79   78.77  92.6429 < 2.2e-16 ***
-# m                1       98   97.81 115.0399 < 2.2e-16 ***
-#gen              1       29   28.87  33.9605 5.624e-09 ***
-#snp:rep          2      111   55.45  65.2163 < 2.2e-16 ***
-#Residuals 23759988 20200945    0.85
+summary(anova)
+#Df  Sum Sq Mean Sq F value  Pr(>F)    
+#snp                      2      46    22.8   40.66 < 2e-16 ***
+ # as.factor(rep)          19    6056   318.7  568.39 < 2e-16 ***
+#  gen                      1     104   104.3  185.94 < 2e-16 ***
+ # mech                     3    1169   389.7  694.88 < 2e-16 ***
+#  as.factor(c)             2    2071  1035.7 1846.94 < 2e-16 ***
+  as.factor(m)             1    1830  1830.4 3264.21 < 2e-16 ***
+  snp:as.factor(rep)      38    2414    63.5  113.29 < 2e-16 ***
+  snp:gen                  2      17     8.4   15.05 2.9e-07 ***
+  Residuals          2159931 1211172     0.6    
+
 
 
 ### might want to look at specific cases - tukey?
 ###double check that I only have deme 6!
-Fstats<-list()
-pvalues<-list()
-for(i in 1:length(unique(data_long[which(data_long$gen==10 & data_long$deme==6),]$index))){
-  Fstats[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,4]
-  pvalues[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,5]
-}
-
-
-Fstats100<-list()
-pvalues100<-list()
-for(i in 1:length(unique(data_long[which(data_long$gen==100 & data_long$deme==6),]$index))){
-  Fstats100[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,4]
-  pvalues100[[i]]<-anova(lm(genotype~snp*rep, data=data_long[data_long$index==unique(data_long$index)[i],]))[3,5]
-}
-
-#### want to replicate figure 3, A, top and middle rows from Lindtke and Buerkle 2015
-### q= genotype/2
-### Q = genotype = 1 = 1, if genotype=0 or 2, = 0
 
 
 #####GENERATION 10#####
