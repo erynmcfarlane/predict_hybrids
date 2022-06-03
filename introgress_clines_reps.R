@@ -59,7 +59,21 @@ alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
 alldata_df_6_10_noE<-alldata_df_6_10[which(alldata_df_6_10$mech %in% c("dmi", "path")),]
 
 ##### this is really close, just keep on it!
-genomic.clines<-list() ##oh no, a list!
+Fitted.AA.Fstats.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.AA.pvalue.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.Aa.Fstats.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.Aa.pvalue.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+
+Fitted.AA.Fstats.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.AA.pvalue.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.Aa.Fstats.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.Aa.pvalue.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+
+Fitted.AA.Fstats.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.AA.pvalue.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.Aa.Fstats.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+Fitted.Aa.pvalue.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
 #png(file="genomic_cline_plots1.4.png", width=1200, height=1200, units='px')
 #png(file="genomic_cline_plots1.10.png", width=1200, height=1200, units='px')
@@ -69,6 +83,8 @@ layout(matrix(c(9,7,8,12,10,11,
                 3,1,2,6,4,5), 2, 6, byrow=TRUE))
 for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   genomic.clines.reps<-list()
+  Fitted.AA<-list()
+  Fitted.Aa<-list()
     for(j in 1:20){
   introgress.data<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),c(12:14)]
   chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
@@ -79,7 +95,30 @@ for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   loci.data[,2]<-'C'
   loci.data[,3]<-chromosome
   genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
+  Fitted.AA[[j]]<-t(genomic.clines.reps[[j]]$Fitted.AA)
+  Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
     }
+  Fitted.AA.df<-do.call(rbind.data.frame, Fitted.AA)
+  Fitted.AA.df$rep<-as.factor(rep(seq(1,20), each=150))
+  Fitted.Aa.df<-do.call(rbind.data.frame, Fitted.Aa)
+  Fitted.Aa.df$rep<-as.factor(rep(seq(1,20), each=150))
+  
+  Fitted.AA.Fstats.1.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.4~Fitted.AA.df$rep)))[7]
+  Fitted.AA.pvalue.1.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.4~Fitted.AA.df$rep)))[9]
+  Fitted.Aa.Fstats.1.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.4~Fitted.Aa.df$rep)))[7]
+  Fitted.Aa.pvalue.1.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.4~Fitted.Aa.df$rep)))[9]
+  
+  
+  Fitted.AA.Fstats.1.10[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.10~Fitted.AA.df$rep)))[7]
+  Fitted.AA.pvalue.1.10[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.10~Fitted.AA.df$rep)))[9]
+  Fitted.Aa.Fstats.1.10[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.10~Fitted.Aa.df$rep)))[7]
+  Fitted.Aa.pvalue.1.10[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.10~Fitted.Aa.df$rep)))[9]
+  
+  Fitted.AA.Fstats.2.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l2.4~Fitted.AA.df$rep)))[7]
+  Fitted.AA.pvalue.2.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l2.4~Fitted.AA.df$rep)))[9]
+  Fitted.Aa.Fstats.2.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l2.4~Fitted.Aa.df$rep)))[7]
+  Fitted.Aa.pvalue.2.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l2.4~Fitted.Aa.df$rep)))[9]
+  
   plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
   rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
   genomic.cline.plot(genomic.clines.reps)
@@ -102,3 +141,8 @@ mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
 
+Fitted.AA.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), Fitted.AA.Fstats.1.4, Fitted.AA.pvalue.1.4, Fitted.AA.Fstats.1.10, Fitted.AA.pvalue.1.10, Fitted.AA.Fstats.2.4, Fitted.AA.pvalue.2.4)
+Fitted.Aa.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), Fitted.Aa.Fstats.1.4, Fitted.Aa.pvalue.1.4, Fitted.Aa.Fstats.1.10, Fitted.Aa.pvalue.1.10, Fitted.Aa.Fstats.2.4, Fitted.Aa.pvalue.2.4)
+
+write.table(Fitted.AA.Anova, file="Fitted.AA.Anova.csv", col.names=T, row.names=F, quote=F, sep=",")
+write.table(Fitted.Aa.Anova, file="Fitted.het.Anova.csv", col.names=T, row.names=F, quote=F, sep=",")
