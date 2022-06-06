@@ -64,37 +64,67 @@ summaries_mean_q<-summaries_mean_q[,c(10, 6)]
 names(summaries_mean_q)<-c("partial_index", "mean_q")
 summaries_q<-merge(summaries_q,summaries_mean_q, by='partial_index')
 
-png(file="genomic_cline_plots.png", width=1200, height=1200, units='px')
-#png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
-par(mfrow=c(4,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
-layout(matrix(c(21,19,20,24,22,23,
-                9,7,8,12,10,11,
-                3,1,2,6,4,5,
-                15,13,14,18,16,17), 4, 6, byrow=TRUE))
-for(i in 1:length(unique(summaries_q$index_nosnp))){
-plot(0, type="n", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=1.5)
-for(j in 1:20){
-  lines(summaries_q[which(summaries_q$index_nosnp == unique(summaries_q$index_nosnp)[i]) & summaries_q$rep==j,6], summaries_q[which(summaries_q$index_nosnp == unique(summaries_q$index_nosnp)[i]) & summaries_q$rep==j,8], type='l', col=colours[j])
-  }
-}
-
-summaries_q$snp_num<2.5 & 
-  
-  
-plot_sum<-ggplot(summaries_q[which(summaries_q$snp_num<2.5),])+geom_line(aes(snp_num, q, colour=as.factor(rep)))+scale_colour_manual(values=colours)+geom_line(aes(snp_num, mean_q), colour='black')+facet_grid(mech~m+c)+theme_bw()
-plot_sum<-plot_sum+ylab("Admixture Proportion")+theme(axis.ticks.x = element_blank(),axis.text.x = element_blank(), axis.title.x=element_blank())+guides(fill="none")+theme(legend.position = "none") 
-
 summaries_Q<-summarySE(data_long_noE, measurevar='Q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_Q$partial_index<-paste(summaries_Q$m, summaries_Q$c, summaries_Q$mech, summaries_Q$snp_num)
+summaries_Q$index_nosnp<-paste(summaries_Q$m, summaries_Q$c, summaries_Q$mech)
 summaries_mean_Q<-summarySE(data_long_noE, measurevar='Q', groupvars=c("m", "c", "mech", 'snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_mean_Q$partial_index<-paste(summaries_mean_Q$m, summaries_mean_Q$c, summaries_mean_Q$mech, summaries_mean_Q$snp_num)
-summaries_mean_Q$index_nosnp<-paste(summaries_mean_Q$m, summaries_mean_Q$c, summaries_mean_Q$mech)
 summaries_mean_Q<-summaries_mean_Q[,c(10, 6)]
 names(summaries_mean_Q)<-c("partial_index", "mean_Q")
 summaries_Q<-merge(summaries_Q,summaries_mean_Q, by='partial_index')
 
-plot_sum_Q<-ggplot(summaries_Q[which(summaries_Q$snp_num<2.5),])+geom_line(aes(snp_num, Q, colour=as.factor(rep)))+scale_colour_manual(values=colours)+geom_line(aes(snp_num, mean_Q), colour='black')+facet_grid(mech~m+c)+theme_bw()+ theme(strip.background = element_blank(),strip.text.x = element_blank())
-plot_sum_Q<-plot_sum_Q+xlab("Chromosomes")+ylab("Intersource Ancestry")+guides(colour=guide_legend(title="Replicate"))
-plot_sum/plot_sum_Q
+pdf(file="genomic_cline_plots_baseR.pdf", width=10, height=10)
+#png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
+par(mfrow=c(4,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
+layout(matrix(c(1,3,5,7,9,11,
+                2,4,6,8,10,12), 2, 6, byrow=TRUE))
+for(i in 1:length(unique(summaries_q$index_nosnp))){
+plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=2)
+for(j in 1:20){
+  lines(seq(1.100, 2.500,length.out=1044) , summaries_q[which(summaries_q$index_nosnp == unique(summaries_q$index_nosnp)[i]) & summaries_q$rep==j & summaries_q$snp_num<2.51,8],type='l', col=colours[j])
+  }
 
-ggsave("plotsum_admix_intersource_10.png")
+
+if (i %in% c(1,3,5,7,9,11))
+{
+  mtext(paste0("m = ", summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$m[i]), line=2, cex=1.5)
+  mtext(paste0("c = ", summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$c[i]), line=0.25, cex=1.5)
+}
+
+if (i %in% c(11,12))
+{
+  if (summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
+  else if (summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+  }
+}
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+
+### Intersource Ancestry ###
+
+layout(matrix(c(1,3,5,7,9,11,
+                2,4,6,8,10,12), 2, 6, byrow=TRUE))
+for(i in 1:length(unique(summaries_Q$index_nosnp))){
+  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=2)
+  for(j in 1:20){
+    lines(seq(1.100, 2.500,length.out=1044) , summaries_Q[which(summaries_Q$index_nosnp == unique(summaries_Q$index_nosnp)[i]) & summaries_Q$rep==j & summaries_Q$snp_num<2.51,8],type='l', col=colours[j])
+  lines(seq(1.100, 2.500,length.out=1044), summaries_mean_Q[which(summaries_mean_Q$index_nosnp == unique(summaries_mean_Q$index_nosnp)[i]) & summaries_mean_Q$rep==j,2])### still need to add the mean!
+    }
+  
+  
+  if (i %in% c(1,3,5,7,9,11))
+  {
+    mtext(paste0("m = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$m[i]), line=2, cex=1.5)
+    mtext(paste0("c = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$c[i]), line=0.25, cex=1.5)
+  }
+  
+  if (i %in% c(11,12))
+  {
+    if (summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
+    else if (summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+  }
+}
+mtext('Intersource Ancestry', side = 1, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+
+dev.off()
