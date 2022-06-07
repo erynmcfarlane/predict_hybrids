@@ -75,9 +75,9 @@ Fitted.Aa.Fstats.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 Fitted.Aa.pvalue.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
-#png(file="genomic_cline_plots1.4.png", width=1200, height=1200, units='px')
-#png(file="genomic_cline_plots1.10.png", width=1200, height=1200, units='px')
-png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
+pdf(file="genomic_cline_plots1.4.pdf", width=10, height=10)
+#pdf(file="genomic_cline_plots1.10.pdf", width=10, height=10)
+#pdf(file="genomic_cline_plots2.4.pdf", width=10, height=10)
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(9,7,8,12,10,11,
                 3,1,2,6,4,5), 2, 6, byrow=TRUE))
