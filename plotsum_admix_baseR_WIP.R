@@ -73,15 +73,20 @@ summaries_mean_Q<-summaries_mean_Q[,c(10, 6)]
 names(summaries_mean_Q)<-c("partial_index", "mean_Q")
 summaries_Q<-merge(summaries_Q,summaries_mean_Q, by='partial_index')
 
-pdf(file="genomic_cline_plots_baseR.pdf", width=10, height=10)
-#png(file="genomic_cline_plots2.4.png", width=1200, height=1200, units='px')
-par(mfrow=c(4,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
+summaries_q<-summaries_q[which(summaries_q$snp_num<2.51),] ### to only use the chromosomes I'm gonna plot
+summaries_Q<-summaries_Q[which(summaries_Q$snp_num<2.51),]
+
+###admix
+pdf(file="plotsum_admix_10.pdf", width=10, height=5)
+par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(1,3,5,7,9,11,
                 2,4,6,8,10,12), 2, 6, byrow=TRUE))
 for(i in 1:length(unique(summaries_q$index_nosnp))){
 plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=2)
+summaries_q_temp<-summaries_q[which(summaries_q$index_nosnp == unique(summaries_q$index_nosnp)[i]),]
 for(j in 1:20){
-  lines(seq(1.100, 2.500,length.out=1044) , summaries_q[which(summaries_q$index_nosnp == unique(summaries_q$index_nosnp)[i]) & summaries_q$rep==j & summaries_q$snp_num<2.51,8],type='l', col=colours[j])
+  lines(summaries_q_temp[which(summaries_q_temp$rep==j),6] , summaries_q_temp[which(summaries_q_temp$rep==j),8],type='l', col=colours[j])
+  lines(summaries_q_temp[which(summaries_q_temp$rep==j),6], summaries_q_temp[which(summaries_q_temp$rep==j),13], type='l', col='black')
   }
 
 
@@ -97,24 +102,28 @@ if (i %in% c(11,12))
   else if (summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
   }
 }
-mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
-mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2)
+dev.off()
 
 ### Intersource Ancestry ###
-
+pdf(file="plotsum_intersource_10.pdf", width=10, height=5)
+par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(1,3,5,7,9,11,
                 2,4,6,8,10,12), 2, 6, byrow=TRUE))
+
 for(i in 1:length(unique(summaries_Q$index_nosnp))){
   plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=2)
+  summaries_Q_temp<-summaries_Q[which(summaries_Q$index_nosnp == unique(summaries_Q$index_nosnp)[i]),]
   for(j in 1:20){
-    lines(seq(1.100, 2.500,length.out=1044) , summaries_Q[which(summaries_Q$index_nosnp == unique(summaries_Q$index_nosnp)[i]) & summaries_Q$rep==j & summaries_Q$snp_num<2.51,8],type='l', col=colours[j])
-  lines(seq(1.100, 2.500,length.out=1044), summaries_mean_Q[which(summaries_mean_Q$index_nosnp == unique(summaries_mean_Q$index_nosnp)[i]) & summaries_mean_Q$rep==j,2])### still need to add the mean!
-    }
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6] , summaries_Q_temp[which(summaries_Q_temp$rep==j),8],type='l', col=colours[j])
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6], summaries_Q_temp[which(summaries_Q_temp$rep==j),13], type='l', col='black')
+  }
   
   
   if (i %in% c(1,3,5,7,9,11))
   {
-    mtext(paste0("m = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$m[i]), line=2, cex=1.5)
+   mtext(paste0("m = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$m[i]), line=2, cex=1.5)
     mtext(paste0("c = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$c[i]), line=0.25, cex=1.5)
   }
   
@@ -124,7 +133,6 @@ for(i in 1:length(unique(summaries_Q$index_nosnp))){
     else if (summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
   }
 }
-mtext('Intersource Ancestry', side = 1, outer = TRUE, line = 2, cex=2.5)
-mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
-
+mtext('Intersource Ancestry', side = 1, outer = TRUE, line = 2, cex=2)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2)
 dev.off()
