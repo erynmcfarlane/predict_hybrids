@@ -146,3 +146,30 @@ Fitted.Aa.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), Fitted.A
 
 write.table(Fitted.AA.Anova, file="Fitted.AA.Anova.csv", col.names=T, row.names=F, quote=F, sep=",")
 write.table(Fitted.Aa.Anova, file="Fitted.het.Anova.csv", col.names=T, row.names=F, quote=F, sep=",")
+
+
+
+l1.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l1.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+
+l1.10_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l1.10_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+
+l2.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l2.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+
+
+for(i in 1:length(unique(alldata_df_6_10_noE$index))){
+l1.4_genotype_fstat[[i]]<-unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
+l1.4_genotype_pvalue[[i]]<-unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
+
+l1.10_genotype_fstat[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
+l1.10_genotype_pvalue[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
+
+l2.4_genotype_fstat[[i]]<-unlist(summary(aov(l2.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
+l2.4_genotype_pvalue[[i]]<-unlist(summary(aov(l2.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
+} 
+
+Genotype.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), l1.4_genotype_fstat, l1.4_genotype_pvalue, l1.10_genotype_fstat, l1.10_genotype_pvalue, l2.4_genotype_fstat, l2.4_genotype_pvalue)  
+ write.table(Genotype.Anova, file="Genotype.Anova.csv", col.names=T, row.names=F, quote=F, sep=',') 
+  
