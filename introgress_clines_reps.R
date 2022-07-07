@@ -75,6 +75,8 @@ Fitted.Aa.Fstats.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 Fitted.Aa.pvalue.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
+
+###Plots of everything for the supplementary material
 pdf(file="genomic_cline_plots1.4.pdf", width=10, height=10)
 #pdf(file="genomic_cline_plots1.10.pdf", width=10, height=10)
 #pdf(file="genomic_cline_plots2.4.pdf", width=10, height=10)
@@ -149,6 +151,40 @@ write.table(Fitted.Aa.Anova, file="Fitted.het.Anova.csv", col.names=T, row.names
 
 
 
+###Want an example plot of DMI, m=0.01, c=0.9
+pdf(file="genomic_cline_plots_0.01_0.09_DMI.pdf", width=10, height=10)
+
+par(mfrow=c(1,3), mar=c(5,5,0,0), oma=c(5,5,4,4))
+genomic.clines.reps<-list()
+Fitted.AA<-list()
+Fitted.Aa<-list()
+### do this three times, and change the loci in the genomic cline plot - ERYN, rewrite the function so you can put loci number in it at some point.
+for(j in 1:20){
+  introgress.data<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index=="0.01 0.9 dmi" & alldata_df_6_10_noE$rep==j),c(12:14)]
+  chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
+  hi.index<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index=="0.01 0.9 dmi" & alldata_df_6_10_noE$rep==j),]$q
+  loci.data<-matrix(nrow=length(introgress.data), ncol=3)
+  dim(loci.data)<-c(3, 3)
+  loci.data[,1]<-colnames(introgress.data)
+  loci.data[,2]<-'C'
+  loci.data[,3]<-chromosome
+  genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
+  Fitted.AA[[j]]<-t(genomic.clines.reps[[j]]$Fitted.AA)
+  Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
+}
+plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
+rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
+genomic.cline.plot(genomic.clines.reps)
+
+mtext("Locus 1.4", line=1, cex=1.5, at=-2.25)
+mtext("Locus 1.10", line=1, cex=1.5, at=-0.9)
+mtext("Locus 2.4", line=1, cex=1.5, at=0.5)
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+
+dev.off()
+
+###ANOVAs for the results
 l1.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l1.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
