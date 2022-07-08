@@ -78,7 +78,7 @@ write.csv(summaries_Q, file="summaries_Q12.csv", quote=FALSE, row.names=FALSE)
 ### ------------------ beginning of plotting
 
 summaries_q<-read.csv("summaries_q.csv")
-summaries_Q<-read.csv("summaries_Q.csv")
+summaries_Q<-read.csv("summaries_Q12.csv")
 
 library(MetBrewer)
 library(patchwork)
@@ -127,6 +127,7 @@ plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 13
 plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 14
 text(0.7, 0.5, "Admixture proportion (q)", srt=90, cex=1.5)
 text(0.2, 0.5, "DMI", cex=2, srt=90)
+mtext("A)", side=3, line=1, cex=2.5)
 plot(0:1, 0:1,  type="n", xlab="", ylab="", axes=FALSE) # plot 15
 text(0.7, 0.5, "Admixture proportion (q)", srt=90, cex=1.5)
 text(0.2, 0.5, "path", cex=2, srt=90)
@@ -174,6 +175,7 @@ plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 13
 plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 14
 text(0.7, 0.5, "Interspecific ancestry (Q12)", srt=90, cex=1.5)
 text(0.2, 0.5, "DMI", cex=2, srt=90)
+mtext("B)", side=3, line=1, cex=2.5)
 plot(0:1, 0:1,  type="n", xlab="", ylab="", axes=FALSE) # plot 15
 text(0.7, 0.5, "Interspecific ancestry (Q12)", srt=90, cex=1.5)
 text(0.2, 0.5, "path", cex=2, srt=90)
