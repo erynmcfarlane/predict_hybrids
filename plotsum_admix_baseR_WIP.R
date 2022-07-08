@@ -18,16 +18,14 @@ c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
 mech<-str_extract(basenames, "^([^_]+_){1}([^_])") 
 
 alldata<-list()
-setwd("/gscratch/buerkle/data/incompatible/runs")
 
 for(i in 1:length(datafiles_11)){
-  alldata[[i]]<-fread(datafiles_11[i], sep=",", header=T)
+  alldata[[i]]<-fread(paste0("/gscratch/buerkle/data/incompatible/runs/", datafiles_11[i]), sep=",", header=T)
   alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
   alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
   alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
 }
 
-setwd("/gscratch/emcfarl2/predicting_hybrids")
 alldata_df<-do.call(rbind.data.frame, alldata)
 
 ####clean up
@@ -51,9 +49,6 @@ summary(data_long$snp_num)
 data_long$q<-data_long$genotype/2
 data_long$Q<-ifelse(data_long$genotype==1, 1, 0) ### is this right? There are really only two locus-specific options, right?
 
-library(MetBrewer)
-library(patchwork)
-colours=met.brewer(name="OKeeffe1", n=20, type="continuous")
 data_long_noE<-data_long[which(data_long$mech %in% c("dmi", "path")),]
 summaries_q<-summarySE(data_long_noE, measurevar='q', groupvars=c("m", "c", "mech", 'rep','snp_num'), na.rm=FALSE, conf.interval=.95)
 summaries_q$partial_index<-paste(summaries_q$m, summaries_q$c, summaries_q$mech, summaries_q$snp_num)
@@ -76,63 +71,111 @@ summaries_Q<-merge(summaries_Q,summaries_mean_Q, by='partial_index')
 summaries_q<-summaries_q[which(summaries_q$snp_num<2.51),] ### to only use the chromosomes I'm gonna plot
 summaries_Q<-summaries_Q[which(summaries_Q$snp_num<2.51),]
 
-###admix
-pdf(file="plotsum_admix_10.pdf", width=10, height=5)
-par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
-layout(matrix(c(1,3,5,7,9,11,
-                2,4,6,8,10,12), 2, 6, byrow=TRUE))
+write.csv(summaries_q, file="summaries_q.csv", quote=FALSE, row.names=FALSE)
+write.csv(summaries_Q, file="summaries_Q12.csv", quote=FALSE, row.names=FALSE)
+
+
+### ------------------ beginning of plotting
+
+summaries_q<-read.csv("summaries_q.csv")
+summaries_Q<-read.csv("summaries_Q.csv")
+
+library(MetBrewer)
+library(patchwork)
+colours <- met.brewer(name="OKeeffe1", n=20, type="continuous")
+
+
+###admix --------------------------------------------------------
+pdf(file="plotsum_admix_10.pdf", width=10, height=6)
+layout(matrix(c(13, 16:21, 14, seq(1,11,2), 15, seq(2,12,2)), nrow=3, byrow=TRUE),
+       widths=c(3,rep(5,6)), heights=c(1, 5, 5))
+par(mar=c(4,2,0.1,0.1))
 for(i in 1:length(unique(summaries_q$index_nosnp))){
-plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=2)
-summaries_q_temp<-summaries_q[which(summaries_q$index_nosnp == unique(summaries_q$index_nosnp)[i]),]
-for(j in 1:20){
-  lines(summaries_q_temp[which(summaries_q_temp$rep==j),6] , summaries_q_temp[which(summaries_q_temp$rep==j),8],type='l', col=colours[j])
-  lines(summaries_q_temp[which(summaries_q_temp$rep==j),6], summaries_q_temp[which(summaries_q_temp$rep==j),13], type='l', col='black')
+  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1.1,2.5), axes=F)
+  rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4], col='light gray')
+  box()
+  axis(1, at=c(1.5,2.5), labels=c(1,2), tick=FALSE, cex.axis=1.5)
+  axis(1, at=c(1.1,2), labels=c("", ""))
+  summaries_q_temp <- summaries_q[which(summaries_q$index_nosnp ==
+                                        unique(summaries_q$index_nosnp)[i]),]
+  for(j in 1:20){
+    ## cab: I broke the connection between chromosome 1 and 2 markers
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][1:46] ,
+          summaries_q_temp[which(summaries_q_temp$rep==j),8][1:46], col=colours[j])
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][47:87] ,
+          summaries_q_temp[which(summaries_q_temp$rep==j),8][47:87], col=colours[j])
+    
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][1:46],
+          summaries_q_temp[which(summaries_q_temp$rep==j),13][1:46], col='black')
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][47:87],
+          summaries_q_temp[which(summaries_q_temp$rep==j),13][47:87], col='black')
+  }
+  if(i %in% 1:2){
+    axis(2, at=c(0,0.5,1), labels=c(0, "", 1), cex.axis=1.5)
   }
 
-
-if (i %in% c(1,3,5,7,9,11))
-{
-  mtext(paste0("m = ", summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$m[i]), line=2, cex=1.5)
-  mtext(paste0("c = ", summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$c[i]), line=0.25, cex=1.5)
-}
-
-if (i %in% c(11,12))
-{
-  if (summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
-  else if (summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+  if (i %in% c(1,3,5,7,9,11)){
+    mtext(paste0("m = ",
+                 summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$m[i]),
+          line=2, cex=1.3)
+    mtext(paste0("c = ", summaries_q[which(summaries_q$index==unique(summaries_q$index)[i]),]$c[i]), line=0.25, cex=1.3)
+  } else{
+    mtext('Chromosome', side=1, line = 3)
   }
 }
-mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2)
-mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2)
+plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 13
+plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 14
+text(0.7, 0.5, "Admixture proportion (q)", srt=90, cex=1.5)
+text(0.2, 0.5, "DMI", cex=2, srt=90)
+plot(0:1, 0:1,  type="n", xlab="", ylab="", axes=FALSE) # plot 15
+text(0.7, 0.5, "Admixture proportion (q)", srt=90, cex=1.5)
+text(0.2, 0.5, "path", cex=2, srt=90)
+## did not plot 16:21, but instead simply let mtext bleed in
 dev.off()
 
-### Intersource Ancestry ###
-pdf(file="plotsum_intersource_10.pdf", width=10, height=5)
-par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
-layout(matrix(c(1,3,5,7,9,11,
-                2,4,6,8,10,12), 2, 6, byrow=TRUE))
-
+### Intersource Ancestry ### ---------------------------------------
+pdf(file="plotsum_intersource_10.pdf", width=10, height=6)
+layout(matrix(c(13, 16:21, 14, seq(1,11,2), 15, seq(2,12,2)), nrow=3, byrow=TRUE),
+       widths=c(3,rep(5,6)), heights=c(1, 5, 5))
+par(mar=c(4,2,0.1,0.1))
 for(i in 1:length(unique(summaries_Q$index_nosnp))){
-  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1,2.5), cex.axis=2)
+  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1.1,2.5), axes=F)
+  rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4], col='light gray')
+  box()
+  axis(1, at=c(1.5,2.5), labels=c(1,2), tick=FALSE, cex.axis=1.5)
+  axis(1, at=c(1.1,2), labels=c("", ""))
   summaries_Q_temp<-summaries_Q[which(summaries_Q$index_nosnp == unique(summaries_Q$index_nosnp)[i]),]
   for(j in 1:20){
-    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6] , summaries_Q_temp[which(summaries_Q_temp$rep==j),8],type='l', col=colours[j])
-    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6], summaries_Q_temp[which(summaries_Q_temp$rep==j),13], type='l', col='black')
+    ## cab: I broke the connection between chromosome 1 and 2 markers
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][1:46] ,
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),8][1:46], col=colours[j])
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][47:87] ,
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),8][47:87], col=colours[j])
+    
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][1:46],
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),13][1:46], col='black')
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][47:87],
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),13][47:87], col='black')
   }
-  
-  
-  if (i %in% c(1,3,5,7,9,11))
-  {
-   mtext(paste0("m = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$m[i]), line=2, cex=1.5)
-    mtext(paste0("c = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$c[i]), line=0.25, cex=1.5)
+  if(i %in% 1:2){
+    axis(2, at=c(0,0.5,1), labels=c(0, "", 1), cex.axis=1.5)
   }
-  
-  if (i %in% c(11,12))
-  {
-    if (summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
-    else if (summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+
+  if (i %in% c(1,3,5,7,9,11)){
+    mtext(paste0("m = ",
+                 summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$m[i]),
+          line=2, cex=1.3)
+    mtext(paste0("c = ", summaries_Q[which(summaries_Q$index==unique(summaries_Q$index)[i]),]$c[i]), line=0.25, cex=1.3)
+  } else{
+    mtext('Chromosome', side=1, line = 3)
   }
 }
-mtext('Intersource Ancestry', side = 1, outer = TRUE, line = 2, cex=2)
-mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2)
+plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 13
+plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 14
+text(0.7, 0.5, "Interspecific ancestry (Q12)", srt=90, cex=1.5)
+text(0.2, 0.5, "DMI", cex=2, srt=90)
+plot(0:1, 0:1,  type="n", xlab="", ylab="", axes=FALSE) # plot 15
+text(0.7, 0.5, "Interspecific ancestry (Q12)", srt=90, cex=1.5)
+text(0.2, 0.5, "path", cex=2, srt=90)
+## did not plot 16:21, but instead simply let mtext bleed in
 dev.off()
