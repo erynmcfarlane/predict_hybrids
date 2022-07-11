@@ -230,7 +230,7 @@ dev.off()
 ###Want an example plot of DMI, m=0.01, c=0.9
 pdf(file="genomic_cline_plots_0.01_0.09_DMI.pdf", width=30, height=10)
 
-par(mfrow=c(1,3), mar=c(5,5,0,0), oma=c(5,5,4,4))
+par(mfrow=c(1,3), mar=c(5,5,5,0), oma=c(5,5,4,4), mpg=c(3,3,0))
 genomic.clines.reps<-list()
 Fitted.AA<-list()
 Fitted.Aa<-list()
@@ -249,29 +249,29 @@ for(j in 1:20){
   Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
 }
 ##SNP 1.4
-plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
-axis(1, at=c(0,1), cex.axis=2.5)
-axis(2, at=c(0,1), cex.axis=2.5, las=1)
+plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n", mar=c(1,1,0,0))
+axis(1, at=c(0,1), cex.axis=3)
+axis(2, at=c(0,1), cex.axis=3, las=1)
 rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
 genomic.cline.plot(genomic.clines.reps, 1)
 ##SNP 1.10
 plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
-axis(1, at=c(0,1), cex.axis=2.5)
-axis(2, at=c(0,1), cex.axis=2.5, las=1)
+axis(1, at=c(0,1), cex.axis=3)
+axis(2, at=c(0,1), cex.axis=3, las=1)
 rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
 genomic.cline.plot(genomic.clines.reps, 2)
 ##SNP 3.4
 plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
-axis(1, at=c(0,1), cex.axis=2.5)
-axis(2, at=c(0,1), cex.axis=2.5, las=1)
+axis(1, at=c(0,1), cex.axis=3)
+axis(2, at=c(0,1), cex.axis=3, las=1)
 rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
 genomic.cline.plot(genomic.clines.reps, 3)
 
-mtext("Locus 1.4", line=1, cex=2.5, at=-1.85)
-mtext("Locus 1.10", line=1, cex=2.5, at=-0.68)
-mtext("Locus 3.4", line=1, cex=2.5, at=0.5)
-mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
-mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+mtext("Locus 1.4", line=1, cex=4, at=-1.85)
+mtext("Locus 1.10", line=1, cex=4, at=-0.68)
+mtext("Locus 3.4", line=1, cex=4, at=0.5)
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 1.5, cex=4)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 1, cex=4)
 
 dev.off()
 
