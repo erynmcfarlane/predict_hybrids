@@ -43,7 +43,7 @@ source("genomic.cline.plot.reps.R")
 alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
 
 ###I'm not sure it makes sense using all 510 snps for this. let's do just the 3?
-alldata_df_6_10[,c(1:8, 519:521, 12, 18, 63)]->alldata_df_6_10
+alldata_df_6_10[,c(1:8, 519:521, 12, 18, 114)]->alldata_df_6_10
 alldata_df_6_10$mech<-as.factor(ifelse(alldata_df_6_10$mech=="dmi_m", "dmi", ifelse(alldata_df_6_10$mech=="path_m", "path",ifelse(alldata_df_6_10$mech=="path_e", 'path_e', "dmi_e"))))
 
 alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_e")
@@ -58,28 +58,10 @@ alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
 
 alldata_df_6_10_noE<-alldata_df_6_10[which(alldata_df_6_10$mech %in% c("dmi", "path")),]
 
-##### this is really close, just keep on it!
-Fitted.AA.Fstats.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.AA.pvalue.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.Aa.Fstats.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.Aa.pvalue.1.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-
-Fitted.AA.Fstats.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.AA.pvalue.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.Aa.Fstats.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.Aa.pvalue.1.10<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-
-Fitted.AA.Fstats.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.AA.pvalue.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.Aa.Fstats.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-Fitted.Aa.pvalue.2.4<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
 
 ###Plots of everything for the supplementary material
-pdf(file="genomic_cline_plots1.4.pdf", width=10, height=10)
-#pdf(file="genomic_cline_plots1.10.pdf", width=10, height=10)
-#pdf(file="genomic_cline_plots2.4.pdf", width=10, height=10)
+pdf(file="genomic_cline_plots1.4.pdf", width=25, height=10)
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(9,7,8,12,10,11,
                 3,1,2,6,4,5), 2, 6, byrow=TRUE))
@@ -105,25 +87,13 @@ for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   Fitted.Aa.df<-do.call(rbind.data.frame, Fitted.Aa)
   Fitted.Aa.df$rep<-as.factor(rep(seq(1,20), each=150))
   
-  Fitted.AA.Fstats.1.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.4~Fitted.AA.df$rep)))[7]
-  Fitted.AA.pvalue.1.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.4~Fitted.AA.df$rep)))[9]
-  Fitted.Aa.Fstats.1.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.4~Fitted.Aa.df$rep)))[7]
-  Fitted.Aa.pvalue.1.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.4~Fitted.Aa.df$rep)))[9]
+
   
-  
-  Fitted.AA.Fstats.1.10[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.10~Fitted.AA.df$rep)))[7]
-  Fitted.AA.pvalue.1.10[[i]]<- unlist(summary(aov(Fitted.AA.df$l1.10~Fitted.AA.df$rep)))[9]
-  Fitted.Aa.Fstats.1.10[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.10~Fitted.Aa.df$rep)))[7]
-  Fitted.Aa.pvalue.1.10[[i]]<- unlist(summary(aov(Fitted.Aa.df$l1.10~Fitted.Aa.df$rep)))[9]
-  
-  Fitted.AA.Fstats.2.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l2.4~Fitted.AA.df$rep)))[7]
-  Fitted.AA.pvalue.2.4[[i]]<- unlist(summary(aov(Fitted.AA.df$l2.4~Fitted.AA.df$rep)))[9]
-  Fitted.Aa.Fstats.2.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l2.4~Fitted.Aa.df$rep)))[7]
-  Fitted.Aa.pvalue.2.4[[i]]<- unlist(summary(aov(Fitted.Aa.df$l2.4~Fitted.Aa.df$rep)))[9]
-  
-  plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
+  plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
+  axis(1, at=c(0,1), cex.axis=2.5)
+  axis(2, at=c(0,1), cex.axis=2.5, las=1)
   rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
-  genomic.cline.plot(genomic.clines.reps)
+  genomic.cline.plot(genomic.clines.reps, 1)
   if (i %in% c(9,7,8,12,10,11))
     {
     mtext(paste0("m = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$m[i]), line=2, cex=1.5)
@@ -143,16 +113,122 @@ mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
 
-Fitted.AA.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), Fitted.AA.Fstats.1.4, Fitted.AA.pvalue.1.4, Fitted.AA.Fstats.1.10, Fitted.AA.pvalue.1.10, Fitted.AA.Fstats.2.4, Fitted.AA.pvalue.2.4)
-Fitted.Aa.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), Fitted.Aa.Fstats.1.4, Fitted.Aa.pvalue.1.4, Fitted.Aa.Fstats.1.10, Fitted.Aa.pvalue.1.10, Fitted.Aa.Fstats.2.4, Fitted.Aa.pvalue.2.4)
+### SNP2
 
-write.table(Fitted.AA.Anova, file="Fitted.AA.Anova.csv", col.names=T, row.names=F, quote=F, sep=",")
-write.table(Fitted.Aa.Anova, file="Fitted.het.Anova.csv", col.names=T, row.names=F, quote=F, sep=",")
+pdf(file="genomic_cline_plots1.10.pdf", width=25, height=10)
+par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
+layout(matrix(c(9,7,8,12,10,11,
+                3,1,2,6,4,5), 2, 6, byrow=TRUE))
+for(i in 1:length(unique(alldata_df_6_10_noE$index))){
+  genomic.clines.reps<-list()
+  Fitted.AA<-list()
+  Fitted.Aa<-list()
+  for(j in 1:20){
+    introgress.data<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),c(12:14)]
+    chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
+    hi.index<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),]$q
+    loci.data<-matrix(nrow=length(introgress.data), ncol=3)
+    dim(loci.data)<-c(3, 3)
+    loci.data[,1]<-colnames(introgress.data)
+    loci.data[,2]<-'C'
+    loci.data[,3]<-chromosome
+    genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
+    Fitted.AA[[j]]<-t(genomic.clines.reps[[j]]$Fitted.AA)
+    Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
+  }
+  Fitted.AA.df<-do.call(rbind.data.frame, Fitted.AA)
+  Fitted.AA.df$rep<-as.factor(rep(seq(1,20), each=150))
+  Fitted.Aa.df<-do.call(rbind.data.frame, Fitted.Aa)
+  Fitted.Aa.df$rep<-as.factor(rep(seq(1,20), each=150))
+  
+  
+  
+  plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
+  axis(1, at=c(0,1), cex.axis=2.5)
+  axis(2, at=c(0,1), cex.axis=2.5, las=1)
+  rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
+  genomic.cline.plot(genomic.clines.reps, 2) ###this is where I tell it which SNP of the three I want
+  if (i %in% c(9,7,8,12,10,11))
+  {
+    mtext(paste0("m = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$m[i]), line=2, cex=1.5)
+    mtext(paste0("c = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$c[i]), line=0.25, cex=1.5)
+  }
+  
+  if (i %in% c(11,5))
+  {
+    if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
+  }
+}
+
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+dev.off()
+
+###SNP 3
+
+
+pdf(file="genomic_cline_plots3.4.pdf", width=25, height=10)
+par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
+layout(matrix(c(9,7,8,12,10,11,
+                3,1,2,6,4,5), 2, 6, byrow=TRUE))
+for(i in 1:length(unique(alldata_df_6_10_noE$index))){
+  genomic.clines.reps<-list()
+  Fitted.AA<-list()
+  Fitted.Aa<-list()
+  for(j in 1:20){
+    introgress.data<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),c(12:14)]
+    chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
+    hi.index<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),]$q
+    loci.data<-matrix(nrow=length(introgress.data), ncol=3)
+    dim(loci.data)<-c(3, 3)
+    loci.data[,1]<-colnames(introgress.data)
+    loci.data[,2]<-'C'
+    loci.data[,3]<-chromosome
+    genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
+    Fitted.AA[[j]]<-t(genomic.clines.reps[[j]]$Fitted.AA)
+    Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
+  }
+  Fitted.AA.df<-do.call(rbind.data.frame, Fitted.AA)
+  Fitted.AA.df$rep<-as.factor(rep(seq(1,20), each=150))
+  Fitted.Aa.df<-do.call(rbind.data.frame, Fitted.Aa)
+  Fitted.Aa.df$rep<-as.factor(rep(seq(1,20), each=150))
+  
+  
+  
+  plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
+  axis(1, at=c(0,1), cex.axis=2.5)
+  axis(2, at=c(0,1), cex.axis=2.5, las=1)
+  rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
+  genomic.cline.plot(genomic.clines.reps, 3) ###this is where I tell it which SNP of the three I want
+  if (i %in% c(9,7,8,12,10,11))
+  {
+    mtext(paste0("m = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$m[i]), line=2, cex=1.5)
+    mtext(paste0("c = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$c[i]), line=0.25, cex=1.5)
+  }
+  
+  if (i %in% c(11,5))
+  {
+    if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
+  }
+}
+
+mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
+mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
+dev.off()
+
+
+
 
 
 
 ###Want an example plot of DMI, m=0.01, c=0.9
-pdf(file="genomic_cline_plots_0.01_0.09_DMI.pdf", width=10, height=10)
+pdf(file="genomic_cline_plots_0.01_0.09_DMI.pdf", width=30, height=10)
 
 par(mfrow=c(1,3), mar=c(5,5,0,0), oma=c(5,5,4,4))
 genomic.clines.reps<-list()
@@ -172,13 +248,28 @@ for(j in 1:20){
   Fitted.AA[[j]]<-t(genomic.clines.reps[[j]]$Fitted.AA)
   Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
 }
-plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), cex.axis=1.5)
+##SNP 1.4
+plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
+axis(1, at=c(0,1), cex.axis=2.5)
+axis(2, at=c(0,1), cex.axis=2.5, las=1)
 rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
-genomic.cline.plot(genomic.clines.reps)
+genomic.cline.plot(genomic.clines.reps, 1)
+##SNP 1.10
+plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
+axis(1, at=c(0,1), cex.axis=2.5)
+axis(2, at=c(0,1), cex.axis=2.5, las=1)
+rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
+genomic.cline.plot(genomic.clines.reps, 2)
+##SNP 3.4
+plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
+axis(1, at=c(0,1), cex.axis=2.5)
+axis(2, at=c(0,1), cex.axis=2.5, las=1)
+rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
+genomic.cline.plot(genomic.clines.reps, 3)
 
-mtext("Locus 1.4", line=1, cex=1.5, at=-2.25)
-mtext("Locus 1.10", line=1, cex=1.5, at=-0.9)
-mtext("Locus 2.4", line=1, cex=1.5, at=0.5)
+mtext("Locus 1.4", line=1, cex=2.5, at=-1.85)
+mtext("Locus 1.10", line=1, cex=2.5, at=-0.68)
+mtext("Locus 3.4", line=1, cex=2.5, at=0.5)
 mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 
@@ -191,8 +282,8 @@ l1.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l1.10_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l1.10_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
-l2.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
-l2.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l3.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l3.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
 
 for(i in 1:length(unique(alldata_df_6_10_noE$index))){
@@ -202,10 +293,10 @@ l1.4_genotype_pvalue[[i]]<-unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[whic
 l1.10_genotype_fstat[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
 l1.10_genotype_pvalue[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
 
-l2.4_genotype_fstat[[i]]<-unlist(summary(aov(l2.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
-l2.4_genotype_pvalue[[i]]<-unlist(summary(aov(l2.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
+l3.4_genotype_fstat[[i]]<-unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
+l3.4_genotype_pvalue[[i]]<-unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
 } 
 
-Genotype.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), l1.4_genotype_fstat, l1.4_genotype_pvalue, l1.10_genotype_fstat, l1.10_genotype_pvalue, l2.4_genotype_fstat, l2.4_genotype_pvalue)  
+Genotype.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), l1.4_genotype_fstat, l1.4_genotype_pvalue, l1.10_genotype_fstat, l1.10_genotype_pvalue, l3.4_genotype_fstat, l3.4_genotype_pvalue)  
  write.table(Genotype.Anova, file="Genotype.Anova.csv", col.names=T, row.names=F, quote=F, sep=',') 
   
