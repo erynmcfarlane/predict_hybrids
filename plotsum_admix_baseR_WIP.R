@@ -68,8 +68,8 @@ summaries_mean_Q<-summaries_mean_Q[,c(10, 6)]
 names(summaries_mean_Q)<-c("partial_index", "mean_Q")
 summaries_Q<-merge(summaries_Q,summaries_mean_Q, by='partial_index')
 
-summaries_q<-summaries_q[which(summaries_q$snp_num<2.51),] ### to only use the chromosomes I'm gonna plot
-summaries_Q<-summaries_Q[which(summaries_Q$snp_num<2.51),]
+summaries_q<-summaries_q[which(summaries_q$snp_num<4),] ### to only use the chromosomes I'm gonna plot
+summaries_Q<-summaries_Q[which(summaries_Q$snp_num<4),]
 
 write.csv(summaries_q, file="summaries_q.csv", quote=FALSE, row.names=FALSE)
 write.csv(summaries_Q, file="summaries_Q12.csv", quote=FALSE, row.names=FALSE)
@@ -91,24 +91,29 @@ layout(matrix(c(13, 16:21, 14, seq(1,11,2), 15, seq(2,12,2)), nrow=3, byrow=TRUE
        widths=c(3,rep(5,6)), heights=c(1, 5, 5))
 par(mar=c(4,2,0.1,0.1))
 for(i in 1:length(unique(summaries_q$index_nosnp))){
-  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1.1,2.5), axes=F)
+  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1.1,3.91), axes=F)
   rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4], col='light gray')
   box()
-  axis(1, at=c(1.5,2.5), labels=c(1,2), tick=FALSE, cex.axis=1.5)
-  axis(1, at=c(1.1,2), labels=c("", ""))
+  axis(1, at=c(1.5,2.5,3.5), labels=c(1,2, 3), tick=FALSE, cex.axis=1.5)
+  axis(1, at=c(1.1,2,3,3.95), labels=c("", "", "", ""))
   summaries_q_temp <- summaries_q[which(summaries_q$index_nosnp ==
                                         unique(summaries_q$index_nosnp)[i]),]
   for(j in 1:20){
     ## cab: I broke the connection between chromosome 1 and 2 markers
+    ### sem: since the path models include chromosome 2, we're going to take this through all of chromosome 3, even if they're no longer consistent with Doro's figure
     lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][1:46] ,
           summaries_q_temp[which(summaries_q_temp$rep==j),8][1:46], col=colours[j])
-    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][47:87] ,
-          summaries_q_temp[which(summaries_q_temp$rep==j),8][47:87], col=colours[j])
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][47:92] ,
+          summaries_q_temp[which(summaries_q_temp$rep==j),8][47:92], col=colours[j])
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][93:138] ,
+          summaries_q_temp[which(summaries_q_temp$rep==j),8][93:138], col=colours[j])
     
     lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][1:46],
           summaries_q_temp[which(summaries_q_temp$rep==j),13][1:46], col='black')
-    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][47:87],
-          summaries_q_temp[which(summaries_q_temp$rep==j),13][47:87], col='black')
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][47:92],
+          summaries_q_temp[which(summaries_q_temp$rep==j),13][47:92], col='black')
+    lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][93:138],
+          summaries_q_temp[which(summaries_q_temp$rep==j),13][93:138], col='black')
   }
   if(i %in% 1:2){
     axis(2, at=c(0,0.5,1), labels=c(0, "", 1), cex.axis=1.5)
@@ -140,23 +145,27 @@ layout(matrix(c(13, 16:21, 14, seq(1,11,2), 15, seq(2,12,2)), nrow=3, byrow=TRUE
        widths=c(3,rep(5,6)), heights=c(1, 5, 5))
 par(mar=c(4,2,0.1,0.1))
 for(i in 1:length(unique(summaries_Q$index_nosnp))){
-  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1.1,2.5), axes=F)
+  plot(0, type="l", xlab="", ylab="", ylim=c(0,1), xlim=c(1.1,3.91), axes=F)
   rect(par("usr")[1],par("usr")[3],par("usr")[2],par("usr")[4], col='light gray')
   box()
-  axis(1, at=c(1.5,2.5), labels=c(1,2), tick=FALSE, cex.axis=1.5)
-  axis(1, at=c(1.1,2), labels=c("", ""))
+  axis(1, at=c(1.5,2.5,3.5), labels=c(1,2, 3), tick=FALSE, cex.axis=1.5)
+  axis(1, at=c(1.1,2,3,3.95), labels=c("", "", "", ""))
   summaries_Q_temp<-summaries_Q[which(summaries_Q$index_nosnp == unique(summaries_Q$index_nosnp)[i]),]
   for(j in 1:20){
     ## cab: I broke the connection between chromosome 1 and 2 markers
     lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][1:46] ,
           summaries_Q_temp[which(summaries_Q_temp$rep==j),8][1:46], col=colours[j])
-    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][47:87] ,
-          summaries_Q_temp[which(summaries_Q_temp$rep==j),8][47:87], col=colours[j])
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][47:92] ,
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),8][47:92], col=colours[j])
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][93:138] ,
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),8][93:138], col=colours[j])
     
     lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][1:46],
           summaries_Q_temp[which(summaries_Q_temp$rep==j),13][1:46], col='black')
-    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][47:87],
-          summaries_Q_temp[which(summaries_Q_temp$rep==j),13][47:87], col='black')
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][47:92],
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),13][47:92], col='black')
+    lines(summaries_Q_temp[which(summaries_Q_temp$rep==j),6][93:138],
+          summaries_Q_temp[which(summaries_Q_temp$rep==j),13][93:138], col='black')
   }
   if(i %in% 1:2){
     axis(2, at=c(0,0.5,1), labels=c(0, "", 1), cex.axis=1.5)
