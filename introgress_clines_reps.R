@@ -230,7 +230,7 @@ dev.off()
 ###Want an example plot of DMI, m=0.01, c=0.9
 pdf(file="genomic_cline_plots_0.01_0.09_DMI.pdf", width=30, height=10)
 
-par(mfrow=c(1,3), mar=c(5,5,5,0), oma=c(5,5,4,4), mpg=c(3,3,0))
+par(mfrow=c(1,3), mar=c(5,5,1,1), oma=c(5,5,4,4), mpg=c(3,3,0))
 genomic.clines.reps<-list()
 Fitted.AA<-list()
 Fitted.Aa<-list()
