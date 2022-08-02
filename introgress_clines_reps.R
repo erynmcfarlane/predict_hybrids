@@ -267,9 +267,9 @@ axis(2, at=c(0,1), cex.axis=3, las=1)
 rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
 genomic.cline.plot(genomic.clines.reps, 3)
 
-mtext("Locus 1.4", line=1, cex=4, at=-1.85)
-mtext("Locus 1.10", line=1, cex=4, at=-0.68)
-mtext("Locus 3.4", line=1, cex=4, at=0.5)
+mtext("Selected SNP", line=1, cex=4, at=-1.85)
+mtext("LD with selected SNP", line=1, cex=4, at=-0.68)
+mtext("Neutral SNP", line=1, cex=4, at=0.5)
 mtext('Admixture Proportion', side = 1, outer = TRUE, line = 1.5, cex=4)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 1, cex=4)
 
