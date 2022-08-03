@@ -57,7 +57,7 @@ alldata_df_6_10$index_reps<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_
 alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
 
 alldata_df_6_10_noE<-alldata_df_6_10[which(alldata_df_6_10$mech %in% c("dmi", "path")),]
-
+alldata_df_6_10_noE$rep<-as.factor(alldata_df_6_10_noE$rep)
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
 
 ###Plots of everything for the supplementary material
@@ -298,5 +298,5 @@ l3.4_genotype_pvalue[[i]]<-unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[whic
 } 
 
 Genotype.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), l1.4_genotype_fstat, l1.4_genotype_pvalue, l1.10_genotype_fstat, l1.10_genotype_pvalue, l3.4_genotype_fstat, l3.4_genotype_pvalue)  
- write.table(Genotype.Anova, file="Genotype.Anova.csv", col.names=T, row.names=F, quote=F, sep=',') 
+ write.table(Genotype.Anova, file="Genotype.Anova.repfactor.csv", col.names=T, row.names=F, quote=F, sep=',') 
   
