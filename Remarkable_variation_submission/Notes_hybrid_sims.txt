@@ -1,0 +1,196 @@
+#####################################################################
+## Notes_hybrid_sims.txt
+#####################################################################
+
+## JPJ 2 ii 22
+## jpjahner@gmail.com
+
+## main directory: /gscratch/buerkle/data/incompatible/
+
+
+
+
+## working with one set of files to start:
+	## /gscratch/buerkle/data/incompatible/runs/deme10/
+
+
+salloc --account=evolgen --time=3:00:00
+
+## deme10 and deme11 (dmi)
+
+grep "," dmi_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.01_c0.2.main_first8cols.txt
+grep "," dmi_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.01_c0.9.main_first8cols.txt
+grep "," dmi_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.01_neutral.main_first8cols.txt
+grep "," dmi_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.2_c0.2.main_first8cols.txt
+grep "," dmi_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.2_c0.9.main_first8cols.txt
+grep "," dmi_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.2_neutral.main_first8cols.txt
+
+
+## deme10_1 and deme11_1 (pathways)
+
+grep "," path_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.01_c0.2.main_first8cols.txt
+grep "," path_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.01_c0.9.main_first8cols.txt
+grep "," path_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.01_neutral.main_first8cols.txt
+grep "," path_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.2_c0.2.main_first8cols.txt
+grep "," path_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.2_c0.9.main_first8cols.txt
+grep "," path_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.2_neutral.main_first8cols.txt
+
+
+## deme10_2 and deme11_2 (dmi + env)
+
+grep "," dmi_e_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.01_c0.2.main_first8cols.txt
+grep "," dmi_e_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.01_c0.9.main_first8cols.txt
+grep "," dmi_e_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.01_neutral.main_first8cols.txt
+grep "," dmi_e_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.2_c0.2.main_first8cols.txt
+grep "," dmi_e_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.2_c0.9.main_first8cols.txt
+grep "," dmi_e_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.2_neutral.main_first8cols.txt
+
+
+## deme10_3 and deme11_3 (pathways + env)
+
+grep "," path_e_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.01_c0.2.main_first8cols.txt
+grep "," path_e_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.01_c0.9.main_first8cols.txt
+grep "," path_e_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.01_neutral.main_first8cols.txt
+grep "," path_e_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.2_c0.2.main_first8cols.txt
+grep "," path_e_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.2_c0.9.main_first8cols.txt
+grep "," path_e_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.2_neutral.main_first8cols.txt
+
+
+
+## Awk command to look at summary statistics file for given replicate
+
+awk -F',' '$1 == "6" {print}' dmi_m0.01_c0.9.stats | awk -F',' '$3 == "6" {print}'
+
+
+
+salloc --account=evolgen --time=3:00:00
+
+## deme50 (dmi)
+
+grep "," dmi_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.01_c0.2.main_first8cols.txt
+grep "," dmi_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.01_c0.9.main_first8cols.txt
+grep "," dmi_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.01_neutral.main_first8cols.txt
+grep "," dmi_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.2_c0.2.main_first8cols.txt
+grep "," dmi_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.2_c0.9.main_first8cols.txt
+grep "," dmi_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_m0.2_neutral.main_first8cols.txt
+
+
+## deme50_1 (pathways)
+
+grep "," path_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.01_c0.2.main_first8cols.txt
+grep "," path_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.01_c0.9.main_first8cols.txt
+grep "," path_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.01_neutral.main_first8cols.txt
+grep "," path_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.2_c0.2.main_first8cols.txt
+grep "," path_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.2_c0.9.main_first8cols.txt
+grep "," path_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_m0.2_neutral.main_first8cols.txt
+
+
+## deme50_2 (dmi + env)
+
+grep "," dmi_e_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.01_c0.2.main_first8cols.txt
+grep "," dmi_e_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.01_c0.9.main_first8cols.txt
+grep "," dmi_e_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.01_neutral.main_first8cols.txt
+grep "," dmi_e_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.2_c0.2.main_first8cols.txt
+grep "," dmi_e_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.2_c0.9.main_first8cols.txt
+grep "," dmi_e_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > dmi_e_m0.2_neutral.main_first8cols.txt
+
+
+## deme50_3 (pathways + env)
+
+grep "," path_e_m0.01_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.01_c0.2.main_first8cols.txt
+grep "," path_e_m0.01_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.01_c0.9.main_first8cols.txt
+grep "," path_e_m0.01_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.01_neutral.main_first8cols.txt
+grep "," path_e_m0.2_c0.2.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.2_c0.2.main_first8cols.txt
+grep "," path_e_m0.2_c0.9.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.2_c0.9.main_first8cols.txt
+grep "," path_e_m0.2_neutral.main | cut -f 1,2,3,4,5,6,7,8 -d "," > path_e_m0.2_neutral.main_first8cols.txt
+
+
+
+
+
+
+
+
+
+
+
+## make 48 genotype input files with only deme 6 and either gen 10 or 100
+
+## gen 10
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_m0.01_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_m0.01_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_m0.01_neutral_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_m0.2_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_m0.2_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_m0.2_neutral_deme6_gen10.csv
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_m0.01_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_m0.01_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_m0.01_neutral_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_m0.2_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_m0.2_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_m0.2_neutral_deme6_gen10.csv
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_e_m0.01_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_e_m0.01_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_e_m0.01_neutral_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_e_m0.2_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_e_m0.2_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > dmi_e_m0.2_neutral_deme6_gen10.csv
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_e_m0.01_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_e_m0.01_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_e_m0.01_neutral_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_e_m0.2_c0.2_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_e_m0.2_c0.9_deme6_gen10.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "10" {print}' > path_e_m0.2_neutral_deme6_gen10.csv
+
+
+## 100
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_m0.01_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_m0.01_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_m0.01_neutral_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_m0.2_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_m0.2_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11/dmi_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_m0.2_neutral_deme6_gen100.csv
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_m0.01_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_m0.01_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_m0.01_neutral_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_m0.2_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_m0.2_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_1/path_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_m0.2_neutral_deme6_gen100.csv
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_e_m0.01_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_e_m0.01_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_e_m0.01_neutral_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_e_m0.2_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_e_m0.2_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_2/dmi_e_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > dmi_e_m0.2_neutral_deme6_gen100.csv
+
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.01_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_e_m0.01_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.01_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_e_m0.01_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.01_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_e_m0.01_neutral_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.2_c0.2.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_e_m0.2_c0.2_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.2_c0.9.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_e_m0.2_c0.9_deme6_gen100.csv
+grep "," /gscratch/buerkle/data/incompatible/runs/deme11_3/path_e_m0.2_neutral.main | awk -F',' '$3 == "6" {print}' | awk -F',' '$2 == "100" {print}' > path_e_m0.2_neutral_deme6_gen100.csv
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
