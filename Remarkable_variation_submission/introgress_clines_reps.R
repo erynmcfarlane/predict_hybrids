@@ -1,49 +1,12 @@
+
+
 ##### genomic clines across replicates
-
-### want to look at anovas for SNPs under selection, SNPs on the same chromosome but not under selection and SNPs on a different chromosome, not under selection
-library(tidyverse)
-library(MASS)
-library(data.table)
-library(MetBrewer)
-library(introgress)
-
-datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
-datafiles_11<-datafiles[c(293:316)]
-basenames<-basename(datafiles_11)
-m<-str_extract(basenames, "(\\d+\\.*\\d*)")
-c<-str_match(basenames,"c(\\d+\\.*\\d*)")[,2]
-c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
-mech<-str_extract(basenames, "^([^_]+_){1}([^_])") 
-
-alldata<-list()
-setwd("/gscratch/buerkle/data/incompatible/runs")
-
-for(i in 1:length(datafiles_11)){
-  alldata[[i]]<-fread(datafiles_11[i], sep=",", header=T)
-  alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
-  alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
-  alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
-}
-
-setwd("/gscratch/emcfarl2/predicting_hybrids")
-alldata_df<-do.call(rbind.data.frame, alldata)
-
-####clean up
-rm(alldata)
-
-### skip down for multinomial clines (line 209) ####
-#save.image("introgress_working.RData")
-#load("introgress_working.RData")
+source("SNP_inputs.R")
 
 source("genomic.cline.plot.reps.R")
-### want to use introgress::clines.plot, I think ###
-
-### might need to build 'cline.data' first, what does this look like?
-###let's build alldata_df for deme 6, gen 10
-alldata_df_6_10<-alldata_df[which(alldata_df$deme==6 & alldata_df$gen==10),]
 
 ###I'm not sure it makes sense using all 510 snps for this. let's do just the 3?
-alldata_df_6_10[,c(1:8, 519:521, 12, 18, 114)]->alldata_df_6_10
+data_deme_6_gen_10[,c(1:8, 519:521, 12, 18, 114)]->alldata_df_6_10
 alldata_df_6_10$mech<-as.factor(ifelse(alldata_df_6_10$mech=="dmi_m", "dmi", ifelse(alldata_df_6_10$mech=="path_m", "path",ifelse(alldata_df_6_10$mech=="path_e", 'path_e', "dmi_e"))))
 
 alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_e")
@@ -60,7 +23,7 @@ alldata_df_6_10_noE<-alldata_df_6_10[which(alldata_df_6_10$mech %in% c("dmi", "p
 alldata_df_6_10_noE$rep<-as.factor(alldata_df_6_10_noE$rep)
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
 
-###Plots of everything for the supplementary material
+### Figure S8###
 pdf(file="genomic_cline_plots1.4.pdf", width=25, height=10)
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(9,7,8,12,10,11,
@@ -113,7 +76,7 @@ mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
 
-### SNP2
+####Figure S9 ####
 
 pdf(file="genomic_cline_plots1.10.pdf", width=25, height=10)
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
@@ -167,8 +130,7 @@ mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()
 
-###SNP 3
-
+###Figure S10
 
 pdf(file="genomic_cline_plots3.4.pdf", width=25, height=10)
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
@@ -224,10 +186,7 @@ dev.off()
 
 
 
-
-
-
-###Want an example plot of DMI, m=0.01, c=0.9
+####Figure 4 ####
 pdf(file="genomic_cline_plots_0.01_0.09_DMI.pdf", width=30, height=10)
 
 par(mfrow=c(1,3), mar=c(5,5,1,1), oma=c(5,5,4,4), mpg=c(3,3,0))
@@ -275,7 +234,7 @@ mtext('Probability of Genotype', side = 2, outer = TRUE, line = 1, cex=4)
 
 dev.off()
 
-###ANOVAs for the results
+### Table S4
 l1.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l1.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
