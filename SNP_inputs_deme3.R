@@ -7,21 +7,21 @@ library(MASS)
 library(data.table)
 library(MetBrewer)
 library(introgress)
+library(R.utils)
 
-datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
-datafiles_3<-datafiles[c(329:352)] ### importing the 50 individual, deme 3 cases
+datafiles<-list.files("/project/evolgen/jjahner/hybrid_sims/deme500all",  pattern="*main.gz", recursive=TRUE, include.dirs=TRUE)
 
-basenames<-basename(datafiles_3)
+basenames<-basename(datafiles)
 m<-str_extract(basenames, "(\\d+\\.*\\d*)")
 c<-str_match(basenames,"c(\\d+\\.*\\d*)")[,2]
 c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
 mech<-str_extract(basenames, "^([^_]+_){1}([^_])") 
 
 alldata<-list()
-setwd("/gscratch/buerkle/data/incompatible/runs")
+setwd("/project/evolgen/jjahner/hybrid_sims/deme500all")
 
-for(i in 1:length(datafiles_3)){
-  alldata[[i]]<-fread(datafiles_3[i], sep=",", header=T)
+for(i in 1:length(datafiles)){
+  alldata[[i]]<-fread(datafiles[i], sep=",", header=T)
   alldata[[i]]$m<-as.numeric(rep(m[i], nrow(alldata[[i]]))) # just giving all individuals in the sim the same m and c
   alldata[[i]]$c<-as.numeric(rep(c[i], nrow(alldata[[i]])))
   alldata[[i]]$mech<-as.factor(rep(mech[i], nrow(alldata[[i]])))
