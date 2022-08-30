@@ -24,7 +24,7 @@ data_deme_2_10_noE$rep<-as.factor(data_deme_2_10_noE$rep)
 colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
 
 ####Figure 4 ####
-pdf(file="genomic_cline_plots_0.01_0.09_DMI_deme2.pdf", width=30, height=10)
+pdf(file="genomic_cline_plots_0.01_0.09_DMI_deme3.pdf", width=30, height=10)
 
 par(mfrow=c(1,3), mar=c(5,5,1,1), oma=c(5,5,4,4), mpg=c(3,3,0))
 genomic.clines.reps<-list()
