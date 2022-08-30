@@ -9,7 +9,7 @@ library(MetBrewer)
 library(introgress)
 library(R.utils)
 
-datafiles<-list.files("/project/evolgen/jjahner/hybrid_sims/deme500all",  pattern="*main.gz", recursive=TRUE, include.dirs=TRUE)
+datafiles<-list.files("/gscratch/emcfarl2/predicting_hybrids",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
 
 basenames<-basename(datafiles)
 m<-str_extract(basenames, "(\\d+\\.*\\d*)")
@@ -18,7 +18,7 @@ c[is.na(c)]<-0 #### I think this is right, as c is the measure of selection?
 mech<-str_extract(basenames, "^([^_]+_){1}([^_])") 
 
 alldata<-list()
-setwd("/project/evolgen/jjahner/hybrid_sims/deme500all")
+setwd("/gscratch/emcfarl2/predicting_hybrids")
 
 for(i in 1:length(datafiles)){
   alldata[[i]]<-fread(datafiles[i], sep=",", header=T)

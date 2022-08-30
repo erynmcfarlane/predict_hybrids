@@ -1,0 +1,54 @@
+#### want to run dfuse for all 24 scenarios, but with 3 deme, 150 individuals
+
+module load swset/2018.05
+module load gcc/7.3.0
+module load gsl/2.5
+
+###compliling dfuse
+gcc -O2 -Wall -o dfuse /gscratch/buerkle/data/incompatible/modifications/main_dfuse.c /gscratch/buerkle/data/incompatible/modifications/func_dfuse.c -lgsl -lgslcblas -lm
+
+DMI = /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt
+Path = epifile_2c
+c 0.2 or 0.9 = selfile_1
+c neutral = selfile_1_neutral
+env = envifile_1.txt
+
+None of the deme files are appropriate, so we’ll need a new one that looks like this:
+3
+150 150 150
+300 300 300
+
+### 12 different scenarios
+### DMIs
+
+dfuse -d deme_3_150.txt
+-e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt 
+-s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt
+-r 20 ## number of replicates
+-g 100 ## number of generations
+-m 0.2 ## strength of migration
+-c 0.9 ## strength of selection
+
+
+### DMI
+
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.01 -c 0 -o dmi_m0.01_neutral
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.2 -o dmi_m0.01_c0.2
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.2 -o dmi_m0.01_c0.9
+
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.2 -c 0 -o dmi_m0.2_neutral
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o dmi_m0.2_c0.2
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o dmi_m0.2_c0.9
+
+###path
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.01 -c 0 -o path_m0.01_neutral
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.2 -o path_m0.01_c0.2
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.2 -o path_m0.01_c0.9
+
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.2 -c 0 -o path_m0.2_neutral
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o path_m0.2_c0.2
+./dfuse -d deme_3_150.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o path_m0.2_c0.9
+
+
+
+
