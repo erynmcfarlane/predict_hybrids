@@ -25,24 +25,31 @@ colours<-met.brewer(name='OKeeffe1', n=20, type='continuous')
 
 l1.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l1.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l1.4_genotype_R2<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
 l1.10_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l1.10_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l1.10_genotype_R2<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
 l3.4_genotype_fstat<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 l3.4_genotype_pvalue<-vector(length = length(unique(alldata_df_6_10_noE$index)))
+l3.4_genotype_R2<-vector(length = length(unique(alldata_df_6_10_noE$index)))
 
 
 for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   l1.4_genotype_fstat[[i]]<-unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
   l1.4_genotype_pvalue[[i]]<-unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
+  l1.4_genotype_R2[[i]]<-unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[3]/(unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[3]+unlist(summary(aov(l1.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[4])
   
   l1.10_genotype_fstat[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
   l1.10_genotype_pvalue[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
-  
+  l1.10_genotype_R2[[i]]<-unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[3]/(unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[3]+unlist(summary(aov(l1.10~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[4])
+
   l3.4_genotype_fstat[[i]]<-unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[7]
   l3.4_genotype_pvalue[[i]]<-unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[9]
+  l3.4_genotype_R2[[i]]<-unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[3]/(unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[3]+unlist(summary(aov(l3.4~rep, alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),])))[4])
+  
 } 
 
-Genotype.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), l1.4_genotype_fstat, l1.4_genotype_pvalue, l1.10_genotype_fstat, l1.10_genotype_pvalue, l3.4_genotype_fstat, l3.4_genotype_pvalue)  
+Genotype.Anova<-cbind(unique(as.character(alldata_df_6_10_noE$index)), l1.4_genotype_fstat, l1.4_genotype_pvalue,l1.4_genotype_R2,l1.10_genotype_fstat, l1.10_genotype_pvalue,l1.10_genotype_R2, l3.4_genotype_fstat, l3.4_genotype_pvalue, l3.4_genotype_R2)  
 write.table(Genotype.Anova, file="Genotype.Anova.repfactor.csv", col.names=T, row.names=F, quote=F, sep=',') 
