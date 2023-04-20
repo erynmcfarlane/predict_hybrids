@@ -1,0 +1,28 @@
+### all new dfuse simulations to look at how assymetry affects consisency in SNPs that are or aren't under selection ####
+### all of these are 3 deme cases, rather than 11 deme cases
+
+
+### 100:1
+
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o dmi_m0.01_c0.9_u1001
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o dmi_m0.2_c0.9_u1001
+
+### 10:1
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_10_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o dmi_m0.01_c0.9_u101
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_10_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o dmi_m0.2_c0.9_u101
+
+### 5:1
+
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_5_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o dmi_m0.01_c0.9_u51
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_5_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o dmi_m0.2_c0.9_u51
+
+
+### 2:1
+
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_2_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o dmi_m0.01_c0.9_u21
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_2_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o dmi_m0.2_c0.9_u21
+
+### 1:1
+
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_1_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o dmi_m0.01_c0.9_u11
+/gscratch/buerkle/data/incompatible/dfuse_src/dfuse -d 3_deme_uneven_1_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o dmi_m0.2_c0.9_u11
