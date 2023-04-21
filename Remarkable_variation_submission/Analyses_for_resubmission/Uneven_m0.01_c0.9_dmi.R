@@ -265,6 +265,7 @@ dev.off()
   l3.4_genotype_fstat_0.2_21<-unlist(summary(aov(l3.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.2 0.9 dmi 21"),])))[7]
   R2_l3.4_0.2_21<-unlist(summary(aov(l3.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.2 0.9 dmi 21"),])))[3]/(unlist(summary(aov(l3.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.2 0.9 dmi 21"),])))[3]+unlist(summary(aov(l3.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.2 0.9 dmi 21"),])))[4])
   
+  
   l1.4_genotype_fstat_0.01_11<-unlist(summary(aov(l1.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.01 0.9 dmi 11"),])))[7]
   R2_l1.4_0.01_11<-unlist(summary(aov(l1.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.01 0.9 dmi 11"),])))[3]/(unlist(summary(aov(l1.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.01 0.9 dmi 11"),])))[3]+unlist(summary(aov(l1.4~rep, alldata_df_2_10[which(alldata_df_2_10$index=="0.01 0.9 dmi 11"),])))[4])
   
@@ -285,51 +286,46 @@ dev.off()
   
 SNP<-c(rep("1.4", 10), rep("1.10", 10), rep("3.4", 10))
 m_reps<-c(rep(c(rep(0.01, 5), rep(0.2, 5)), 3))
-asymmetry<-rep(c(100:1, 10, 5, 2, 1), 6)
-joshcrap<-rep(c(0.5, 1.5, 2.5, 3.5, 4.5), 6)
+asymmetry<-rep(c(100, 10, 5, 2, 1), 6)
+plot_labels<-rep(c(0.5, 1.5, 2.5, 3.5, 4.5), 6)
 fstat<-c(l1.4_genotype_fstat_0.01_1001, l1.4_genotype_fstat_0.01_101, l1.4_genotype_fstat_0.01_51, l1.4_genotype_fstat_0.01_21, l1.4_genotype_fstat_0.01_11, l1.4_genotype_fstat_0.2_1001, l1.4_genotype_fstat_0.2_101, l1.4_genotype_fstat_0.2_51, l1.4_genotype_fstat_0.2_21, l1.4_genotype_fstat_0.2_11, l1.10_genotype_fstat_0.01_1001, l1.10_genotype_fstat_0.01_101, l1.10_genotype_fstat_0.01_51, l1.10_genotype_fstat_0.01_21, l1.10_genotype_fstat_0.01_11, l1.10_genotype_fstat_0.2_1001, l1.10_genotype_fstat_0.2_101, l1.10_genotype_fstat_0.2_51, l1.10_genotype_fstat_0.2_21, l1.10_genotype_fstat_0.2_11, l3.4_genotype_fstat_0.01_1001, l3.4_genotype_fstat_0.01_101, l3.4_genotype_fstat_0.01_51, l3.4_genotype_fstat_0.01_21, l3.4_genotype_fstat_0.01_11, l3.4_genotype_fstat_0.2_1001, l3.4_genotype_fstat_0.2_101, l3.4_genotype_fstat_0.2_51, l3.4_genotype_fstat_0.2_21, l3.4_genotype_fstat_0.2_11)
 R2<-c(R2_l1.4_0.01_1001,  R2_l1.4_0.01_101,  R2_l1.4_0.01_51,  R2_l1.4_0.01_21,  R2_l1.4_0.01_11,R2_l1.4_0.2_1001,  R2_l1.4_0.2_101,  R2_l1.4_0.2_51,  R2_l1.4_0.2_21,  R2_l1.4_0.2_11, R2_l1.10_0.01_1001,  R2_l1.10_0.01_101,  R2_l1.10_0.01_51,  R2_l1.10_0.01_21,  R2_l1.10_0.01_11,R2_l1.10_0.2_1001,  R2_l1.10_0.2_101,  R2_l1.10_0.2_51,  R2_l1.10_0.2_21,  R2_l1.10_0.2_11, R2_l3.4_0.01_1001,  R2_l3.4_0.01_101,  R2_l3.4_0.01_51,  R2_l3.4_0.01_21,  R2_l3.4_0.01_11,R2_l3.4_0.2_1001,  R2_l3.4_0.2_101,  R2_l3.4_0.2_51,  R2_l3.4_0.2_21,  R2_l3.4_0.2_11)
 
-cbind.data.frame(SNP, m_reps, asymmetry, fstat, R2, joshcrap)->asym_compare
+cbind.data.frame(SNP, m_reps, asymmetry, fstat, R2, plot_labels)->asym_compare
 
-pdf(file="locus_specific_Fstat_asym_compare.pdf", width=3, height=9)
+pdf(file="locus_specific_Fstat_R2_asym_compare.pdf", width=6, height=9)
 
-par(mfrow=c(3,1), mar=c(5,5,1,1))
-plot(0, type="n", xlab="degree of asymmetry", ylab="Fstat", xlim=c(0, 5), ylim=c(0, 60), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
-axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.25)
-lines(fstat~joshcrap, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.01),])
-lines(fstat~joshcrap, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.2),])
+par(mfcol=c(3,2), mar=c(5,5,1,1))
+plot(0, type="n", xlab="degree of asymmetry", ylab="Fstat - SNP 1.4", xlim=c(0, 5), ylim=c(0, 60), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
+axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.15)
+lines(fstat~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.01),], pch=21,bg="red", cex=1.5)
+lines(fstat~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.2),], pch=21,bg="blue", cex=1.5)
 
-plot(0, type="n", xlab="degree of asymmetry", ylab="Fstat", xlim=c(0, 5), ylim=c(0, 60), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
-axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.25)
-lines(fstat~joshcrap, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.01),])
-lines(fstat~joshcrap, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.2),])
+plot(0, type="n", xlab="degree of asymmetry", ylab="Fstat - SNP 1.10", xlim=c(0, 5), ylim=c(0, 60), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
+axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.15)
+lines(fstat~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.01),], pch=21,bg="red", cex=1.5)
+lines(fstat~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.2),], pch=21,bg="blue", cex=1.5)
 
-plot(0, type="n", xlab="degree of asymmetry", ylab="Fstat", xlim=c(0, 5), ylim=c(0, 60), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
-axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.25)
-lines(fstat~joshcrap, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.01),])
-lines(fstat~joshcrap, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.2),])
-
-dev.off()
+plot(0, type="n", xlab="degree of asymmetry", ylab="Fstat - SNP 3.4", xlim=c(0, 5), ylim=c(0, 60), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
+axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.15)
+lines(fstat~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.01),], pch=21,bg="red", cex=1.5)
+lines(fstat~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.2),], pch=21,bg="blue", cex=1.5)
 
 
-pdf(file="locus_specific_R2_asym_compare.pdf", width=3, height=9)
+plot(0, type="n", xlab="degree of asymmetry", ylab="R2", xlim=c(0, 5), ylim=c(0, 1), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
+axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.15)
+lines(R2~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.01),], pch=21,bg="red", cex=1.5)
+lines(R2~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.2),], pch=21,bg="blue", cex=1.5)
 
-par(mfrow=c(3,1), mar=c(5,5,1,1))
-plot(0, type="n", xlab="degree of asymmetry", ylab="R2", xlim=c(0, 100), ylim=c(0, 1), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
-axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.25)
-lines(R2~asymmetry, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.01),])
-lines(R2~asymmetry, type='o', data=asym_compare[which(asym_compare$SNP=="1.4" & asym_compare$m_reps==0.2),])
+plot(0, type="n", xlab="degree of asymmetry", ylab="R2", xlim=c(0, 5), ylim=c(0, 1), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
+axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.15)
+lines(R2~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.01),], pch=21,bg="red", cex=1.5)
+lines(R2~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.2),], pch=21,bg="blue", cex=1.5)
 
-plot(0, type="n", xlab="degree of asymmetry", ylab="R2", xlim=c(0, 100), ylim=c(0, 1), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
-axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.25)
-lines(R2~asymmetry, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.01),])
-lines(R2~asymmetry, type='o', data=asym_compare[which(asym_compare$SNP=="1.10" & asym_compare$m_reps==0.2),])
-
-plot(0, type="n", xlab="degree of asymmetry", ylab="R2", xlim=c(0, 100), ylim=c(0, 1), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
-axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.25)
-lines(R2~asymmetry, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.01),])
-lines(R2~asymmetry, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.2),])
+plot(0, type="n", xlab="degree of asymmetry", ylab="R2", xlim=c(0, 5), ylim=c(0, 1), las=1, cex.lab=1.5, cex.axis=1.25, xaxt="n")
+axis(1, at=c(0.5,1.5,2.5,3.5,4.5), label=c("1:100", "1:10", "1:5", "1:2", "1:1"), cex.axis=1.15)
+lines(R2~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.01),], pch=21,bg="red", cex=1.5)
+lines(R2~plot_labels, type='o', data=asym_compare[which(asym_compare$SNP=="3.4" & asym_compare$m_reps==0.2),], pch=21,bg="blue", cex=1.5)
 
 dev.off()
 
