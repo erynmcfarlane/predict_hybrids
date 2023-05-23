@@ -51,7 +51,7 @@ summaries_q<-read.csv("summaries_q.csv")
 summaries_Q<-read.csv("summaries_Q12.csv")
 
 library(MetBrewer)
-library(patchwork)
+#library(patchwork)
 colours <- met.brewer(name="OKeeffe1", n=20, type="continuous")
 
 
@@ -101,7 +101,7 @@ for(i in 1:length(unique(summaries_q$index_nosnp))){
 plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 13
 plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 14
 text(0.7, 0.5, "Admixture proportion (q)", srt=90, cex=1.5)
-text(0.2, 0.5, "DMI", cex=2, srt=90)
+text(0.2, 0.5, "BDMI", cex=2, srt=90)
 mtext("A)", side=3, line=1, cex=2.5)
 plot(0:1, 0:1,  type="n", xlab="", ylab="", axes=FALSE) # plot 15
 text(0.7, 0.5, "Admixture proportion (q)", srt=90, cex=1.5)
@@ -153,7 +153,7 @@ for(i in 1:length(unique(summaries_Q$index_nosnp))){
 plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 13
 plot(0:1, 0:1, type="n", xlab="", ylab="", axes=FALSE) ## plot 14
 text(0.7, 0.5, "Interspecific ancestry (Q12)", srt=90, cex=1.5)
-text(0.2, 0.5, "DMI", cex=2, srt=90)
+text(0.2, 0.5, "BDMI", cex=2, srt=90)
 mtext("B)", side=3, line=1, cex=2.5)
 plot(0:1, 0:1,  type="n", xlab="", ylab="", axes=FALSE) # plot 15
 text(0.7, 0.5, "Interspecific ancestry (Q12)", srt=90, cex=1.5)

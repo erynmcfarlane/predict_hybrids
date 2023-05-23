@@ -66,7 +66,7 @@ genomic.cline.plot(genomic.clines.reps, 3)
 mtext("Selected SNP", line=1, cex=4, at=-1.85)
 mtext("LD with selected SNP", line=1, cex=4, at=-0.68)
 mtext("Neutral SNP", line=1, cex=4, at=0.5)
-mtext('Admixture Proportion', side = 1, outer = TRUE, line = 1.5, cex=4)
+mtext('Admixture Proportion (q)', side = 1, outer = TRUE, line = 1.5, cex=4)
 mtext('Probability of Genotype', side = 2, outer = TRUE, line = 1, cex=4)
 
 dev.off()
