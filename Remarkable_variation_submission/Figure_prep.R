@@ -1,5 +1,6 @@
 ###Prep script for most figures ###
 library(MetBrewer)
+anova_cols <- met.brewer("Hokusai1", 12)
 
 uniq_runs <- c("dmi", "path")
 uniq_m <- c(0.01, 0.2)

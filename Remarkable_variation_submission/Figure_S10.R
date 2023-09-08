@@ -1,4 +1,4 @@
-### Script for Figure S10 ###
+### This is for current figures S11, S12 and S13 ###
 
 ##### genomic clines across replicates
 source("SNP_inputs.R")
