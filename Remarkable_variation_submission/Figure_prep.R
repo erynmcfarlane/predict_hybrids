@@ -1,12 +1,12 @@
 ###Prep script for most figures ###
 library(MetBrewer)
 
-uniq_runs <- c("dmi", "dmi_e", "path", "path_e")
+uniq_runs <- c("dmi", "path")
 uniq_m <- c(0.01, 0.2)
 uniq_c <- c(0, 0.2, 0.9)
 uniq_gen <- c(10, 100)
 
-anova_out <- matrix(0, 48, 13)
+anova_out <- matrix(0, 24, 13)
 
 ctr <- 1
 for (i in 1:length(uniq_runs))
