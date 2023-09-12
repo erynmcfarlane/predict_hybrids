@@ -1,14 +1,15 @@
-### Script for Figure S5 ###
+### Script for Figure S8 ###
 library(MetBrewer)
 rep_cols <- met.brewer("OKeeffe1", 20)
 
 
-uniq_runs <- c("dmi", "dmi_e", "path", "path_e")
+uniq_runs <- c("dmi", "path")
 uniq_m <- c(0.01, 0.2)
 uniq_c <- c(0, 0.2, 0.9)
 
-quartz(height=12, width=18)
-par(mar=c(5,5,1,1), mfrow=c(4,6), oma=c(0,0,4,4))
+pdf(height=6, width=18, file="cor_het_gen10_gen100.pdf")
+#quartz(height=12, width=18)
+par(mar=c(5,5,1,1), mfrow=c(2,6), oma=c(0,0,4,4))
 ctr <- 0
 for (i in 1:length(uniq_runs))
 {
@@ -30,7 +31,7 @@ for (i in 1:length(uniq_runs))
       
       dat10 <- read.csv(handle10, header=FALSE)
       dat100 <- read.csv(handle100, header=FALSE)
-      plot(0, type="n", xlim=c(0,1), ylim=c(0,1), xlab="Median gen 10 Q", ylab="Median gen 100 Q", cex.lab=1.75, cex.axis=1.5, las=1)
+      plot(0, type="n", xlim=c(0,1), ylim=c(0,1), xlab="Median gen 10 Q12", ylab="Median gen 100 Q12", cex.lab=1.75, cex.axis=1.5, las=1)
       box(lwd=2)
       if (ctr < 7)
       {
@@ -39,10 +40,8 @@ for (i in 1:length(uniq_runs))
       }
       if (ctr %% 6 == 0)
       {
-        if 		(uniq_runs[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
-        else if (uniq_runs[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
+        if 		(uniq_runs[i]=="dmi") { mtext("BDMI", side=4, line=1.25, cex=1.5) }
         else if (uniq_runs[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
-        else if (uniq_runs[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
       }
       cor_mat <- matrix(0, 20, 2)
       for (l in 1:20)
@@ -57,3 +56,5 @@ for (i in 1:length(uniq_runs))
     }
   }
 }
+
+dev.off()

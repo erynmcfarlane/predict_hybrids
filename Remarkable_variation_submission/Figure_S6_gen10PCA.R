@@ -1,11 +1,12 @@
+### Figure S9 ###
 library("vegan")
-uniq_runs <- c("dmi", "dmi_e", "path", "path_e")
+uniq_runs <- c("dmi", "path")
 uniq_m <- c(0.01, 0.2)
 uniq_c <- c(0, 0.2, 0.9)
 
 gen <- 10
-quartz(height=12, width=18)
-par(mar=c(5,5,0,0), mfrow=c(4,6), oma=c(0,0,4,4))
+pdf(height=6, width=18, file="ellipse_gen10.pdf")
+par(mar=c(5,5,0,0), mfrow=c(2,6), oma=c(0,0,4,4))
 ctr <- 0
 for (i in 1:length(uniq_runs))
 {
@@ -31,11 +32,11 @@ for (i in 1:length(uniq_runs))
       }
       if (ctr %% 6 == 0)
       {
-        if 		(uniq_runs[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
-        else if (uniq_runs[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
+        if 		(uniq_runs[i]=="dmi") { mtext("BDMI", side=4, line=1.25, cex=1.5) }
         else if (uniq_runs[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
-        else if (uniq_runs[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
       }
     }
   }
 }
+
+dev.off()
