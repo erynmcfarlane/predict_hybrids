@@ -1,4 +1,4 @@
-### Script for Figure 3 ###
+### Script for Figure 4 ###
 
 library(MetBrewer)
 triangle_cols <- met.brewer("OKeeffe1", 20)

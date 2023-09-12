@@ -1,60 +1,57 @@
-### Script for Figure S8 ###
-library(MetBrewer)
-rep_cols <- met.brewer("OKeeffe1", 20)
+#### Script for Figure S5 ###
+source('Figure_prep.R')
+source('hexagon.R')
 
+### this is for current figure S5
 
-uniq_runs <- c("dmi", "path")
-uniq_m <- c(0.01, 0.2)
-uniq_c <- c(0, 0.2, 0.9)
+pdf(file="anova_gen10.pdf", width=16, height=4) ### change the title of the plot here
 
-pdf(height=6, width=18, file="cor_het_gen10_gen100.pdf")
-#quartz(height=12, width=18)
-par(mar=c(5,5,1,1), mfrow=c(2,6), oma=c(0,0,4,4))
-ctr <- 0
-for (i in 1:length(uniq_runs))
+layout(matrix(c(13,13,1,2,3,4,5,6,
+                13,13,7,8,9,10,11,12), 2, 8, byrow=TRUE))
+par(mar=c(5,5,0,0), oma=c(0,0,4,4))
+
+for (i in 1:12)
 {
-  for (j in 1:length(uniq_m))
+  if (anova_out_gen10[i,3]==0)	{ handle <- paste0(anova_out_gen10[i,1], "_m", anova_out_gen10[i,2], "_neutral", "_deme6_gen", anova_out_gen10[i,4], ".csv") }
+  else							{ handle <- paste0(anova_out_gen10[i,1], "_m", anova_out_gen10[i,2], "_c", anova_out_gen10[i,3], "_deme6_gen", anova_out_gen10[i,4], ".csv") }
+  dat_in <- read.csv(handle, header=FALSE)
+  plot(0, type="n", xlab="q", ylab="Density", cex.lab=1.5, cex.axis=1.5, ylim=c(0,12), xlim=c(0,1), las=1)
+  if		(anova_out_gen10[i,2]==0.01 & anova_out_gen10[i,3]==0.2)		{ points(0.9, 10.8, pch=21, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.01 & anova_out_gen10[i,3]==0.9)		{ points(0.9, 10.8, pch=22, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.01 & anova_out_gen10[i,3]==0)			{ hexagon(x_center=0.9, y_center=10.8, scale=0.075, plot_xmin=0, plot_xmax=1, plot_ymin=0, plot_ymax=12, color=anova_cols[i]) }
+  else if	(anova_out_gen10[i,2]==0.2 & anova_out_gen10[i,3]==0.2)			{ points(0.9, 10.8, pch=24, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.2 & anova_out_gen10[i,3]==0.9)			{ points(0.9, 10.8, pch=25, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.2 & anova_out_gen10[i,3]==0)			{ points(0.9, 10.8, pch=23, bg=anova_cols[i], cex=3) }
+  for (j in 1:20)
   {
-    for (k in 1:length(uniq_c))
-    {
-      ctr <- ctr + 1
-      if (uniq_c[k]==0)
-      {
-        handle10 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_neutral", "_deme6_gen10.csv")
-        handle100 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_neutral", "_deme6_gen100.csv")
-      }
-      else	
-      {
-        handle10 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_c", uniq_c[k], "_deme6_gen10.csv")
-        handle100 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_c", uniq_c[k], "_deme6_gen100.csv")
-      }
-      
-      dat10 <- read.csv(handle10, header=FALSE)
-      dat100 <- read.csv(handle100, header=FALSE)
-      plot(0, type="n", xlim=c(0,1), ylim=c(0,1), xlab="Median gen 10 Q12", ylab="Median gen 100 Q12", cex.lab=1.75, cex.axis=1.5, las=1)
-      box(lwd=2)
-      if (ctr < 7)
-      {
-        mtext(paste0("m = ", uniq_m[j]), line=2, cex=1.5)
-        mtext(paste0("c = ", uniq_c[k]), line=0.25, cex=1.5)
-      }
-      if (ctr %% 6 == 0)
-      {
-        if 		(uniq_runs[i]=="dmi") { mtext("BDMI", side=4, line=1.25, cex=1.5) }
-        else if (uniq_runs[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
-      }
-      cor_mat <- matrix(0, 20, 2)
-      for (l in 1:20)
-      {
-        rep_sub10 <- subset(dat10, dat10[,1]==l)
-        rep_sub100 <- subset(dat100, dat100[,1]==l)
-        cor_mat[l,1] <- median(rep_sub10[,6])
-        cor_mat[l,2] <- median(rep_sub100[,6])
-        points(median(rep_sub10[,6]), median(rep_sub100[,6]), pch=21, bg=rep_cols[l], cex=2)
-      }
-      mtext(paste0("r = ", round(cor(cor_mat[,1], cor_mat[,2], method="pearson"), 3)), line=-2, adj=0.05, cex=1.25)
-    }
+    rep_sub <- subset(dat_in, dat_in[,1]==j)
+    q_dens <- density(rep_sub[,5])
+    points(q_dens$x, q_dens$y, type="l", lwd=0.5, col=anova_cols[i])
+    polygon(q_dens, col=adjustcolor(anova_cols[i], alpha.f=0.2), border=FALSE)
+  }
+  if (i < 7)
+  {
+    mtext(paste0("m = ", anova_out_gen10[i,2]), line=2, cex=1.5)
+    mtext(paste0("c = ", anova_out_gen10[i,3]), line=0.25, cex=1.5)
+  }
+  if (i %% 6 == 0)
+  {
+    if (anova_out_gen10[i,1]=="dmi") { mtext("bdmi", side=4, line=1.25, cex=1.5) }
+    else if (anova_out_gen10[i,1]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
   }
 }
+plot(anova_out_gen10[,5], anova_out_gen10[,6], type="n", xlab="q anova log10 F", ylab="Q anova log10 F", cex.lab=2.5, cex.axis=1.5, las=1, xlim=range(as.numeric(anova_out_gen10[,5:6])), ylim=range(as.numeric(anova_out_gen10[,5:6])))
+abline(0, 1, lty=2, lwd=4)
+for (i in 1:12)
+{
+  if		(anova_out_gen10[i,2]==0.01 & anova_out_gen10[i,3]==0.2)		{ points(anova_out_gen10[i,5], anova_out_gen10[i,6], pch=21, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.01 & anova_out_gen10[i,3]==0.9)		{ points(anova_out_gen10[i,5], anova_out_gen10[i,6], pch=22, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.01 & anova_out_gen10[i,3]==0)			{ hexagon(as.numeric(anova_out_gen10[i,5]), as.numeric(anova_out_gen10[i,6]), scale=0.03, plot_xmin=min(as.numeric(anova_out_gen10[,5:6])), plot_xmax=max(as.numeric(anova_out_gen10[,5:6])), plot_ymin=min(as.numeric(anova_out_gen10[,5:6])), plot_ymax=max(as.numeric(anova_out_gen10[,5:6])), color=anova_cols[i]) }
+  else if	(anova_out_gen10[i,2]==0.2 & anova_out_gen10[i,3]==0.2)			{ points(anova_out_gen10[i,5], anova_out_gen10[i,6], pch=24, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.2 & anova_out_gen10[i,3]==0.9)			{ points(anova_out_gen10[i,5], anova_out_gen10[i,6], pch=25, bg=anova_cols[i], cex=3) }
+  else if	(anova_out_gen10[i,2]==0.2 & anova_out_gen10[i,3]==0)			{ points(anova_out_gen10[i,5], anova_out_gen10[i,6], pch=23, bg=anova_cols[i], cex=3) }
+}
+legend("topleft", legend=c("m = 0.01; c = 0", "m = 0.01; c = 0.2", "m = 0.01; c = 0.9", "m = 0.2; c = 0", "m = 0.2; c = 0.2", "m = 0.2; c = 0.9"), pch=c(20,21,22,23,24,25), pt.cex=2, pt.bg="black", cex=1.25)
+hexagon(-0.14, 3.00, scale=0.02, plot_xmin=min(as.numeric(anova_out_gen10[,5:6])), plot_xmax=max(as.numeric(anova_out_gen10[,5:6])), plot_ymin=min(as.numeric(anova_out_gen10[,5:6])), plot_ymax=max(as.numeric(anova_out_gen10[,5:6])), color="black")
 
 dev.off()

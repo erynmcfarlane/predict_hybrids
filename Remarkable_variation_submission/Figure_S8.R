@@ -1,76 +1,60 @@
-### All script for Figure S8
+### Script for Figure S8 ###
+library(MetBrewer)
+rep_cols <- met.brewer("OKeeffe1", 20)
 
-##### genomic clines across replicates
-source("SNP_inputs.R") ### must run this whole script first
-source("genomic.cline.plot.reps.R")
 
-###I'm not sure it makes sense using all 510 snps for this. let's do just the 3?
-data_deme_6_gen_10[,c(1:8, 519:521, 12, 18, 114)]->alldata_df_6_10
-alldata_df_6_10$mech<-as.factor(ifelse(alldata_df_6_10$mech=="dmi_m", "dmi", ifelse(alldata_df_6_10$mech=="path_m", "path",ifelse(alldata_df_6_10$mech=="path_e", 'path_e', "dmi_e"))))
+uniq_runs <- c("dmi", "path")
+uniq_m <- c(0.01, 0.2)
+uniq_c <- c(0, 0.2, 0.9)
 
-alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path_e")
-alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "path")
-alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi_e")
-alldata_df_6_10$mech<-relevel(alldata_df_6_10$mech, "dmi")
-
-### I want to do this separately for the 24 categories we have! ###
-alldata_df_6_10$index<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech)
-alldata_df_6_10$index_reps<-paste(alldata_df_6_10$m, alldata_df_6_10$c, alldata_df_6_10$mech, alldata_df_6_10$rep)
-alldata_df_6_10$index<-as.factor(alldata_df_6_10$index)
-
-alldata_df_6_10_noE<-alldata_df_6_10[which(alldata_df_6_10$mech %in% c("dmi", "path")),]
-alldata_df_6_10_noE$rep<-as.factor(alldata_df_6_10_noE$rep)
-colours<-met.brewer(name='OKeeffe1', n=20, type='continuous') 
-
-### Figure S8###
-pdf(file="genomic_cline_plots1.4.pdf", width=25, height=10)
-par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
-layout(matrix(c(9,7,8,12,10,11,
-                3,1,2,6,4,5), 2, 6, byrow=TRUE))
-for(i in 1:length(unique(alldata_df_6_10_noE$index))){
-  genomic.clines.reps<-list()
-  Fitted.AA<-list()
-  Fitted.Aa<-list()
-  for(j in 1:20){
-    introgress.data<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),c(12:14)]
-    chromosome<-(as.numeric(unlist(str_extract(colnames(introgress.data),"[[:digit:]]+\\."))))
-    hi.index<-alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i] & alldata_df_6_10_noE$rep==j),]$q
-    loci.data<-matrix(nrow=length(introgress.data), ncol=3)
-    dim(loci.data)<-c(3, 3)
-    loci.data[,1]<-colnames(introgress.data)
-    loci.data[,2]<-'C'
-    loci.data[,3]<-chromosome
-    genomic.clines.reps[[j]]<-genomic.clines(introgress.data=t(introgress.data), hi.index=hi.index, loci.data=loci.data)
-    Fitted.AA[[j]]<-t(genomic.clines.reps[[j]]$Fitted.AA)
-    Fitted.Aa[[j]]<-t(genomic.clines.reps[[j]]$Fitted.Aa)
-  }
-  Fitted.AA.df<-do.call(rbind.data.frame, Fitted.AA)
-  Fitted.AA.df$rep<-as.factor(rep(seq(1,20), each=150))
-  Fitted.Aa.df<-do.call(rbind.data.frame, Fitted.Aa)
-  Fitted.Aa.df$rep<-as.factor(rep(seq(1,20), each=150))
-  
-  
-  
-  plot(0, type="n", xlab="", ylab="", xlim=c(0,1), ylim=c(0,1), pty='s', xaxt="n", yaxt="n")
-  axis(1, at=c(0,1), cex.axis=2.5)
-  axis(2, at=c(0,1), cex.axis=2.5, las=1)
-  rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
-  genomic.cline.plot(genomic.clines.reps, 1)
-  if (i %in% c(9,7,8,12,10,11))
+pdf(height=6, width=18, file="cor_het_gen10_gen100.pdf")
+#quartz(height=12, width=18)
+par(mar=c(5,5,1,1), mfrow=c(2,6), oma=c(0,0,4,4))
+ctr <- 0
+for (i in 1:length(uniq_runs))
+{
+  for (j in 1:length(uniq_m))
   {
-    mtext(paste0("m = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$m[i]), line=2, cex=1.5)
-    mtext(paste0("c = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$c[i]), line=0.25, cex=1.5)
-  }
-  
-  if (i %in% c(11,5))
-  {
-    if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi") { mtext("dmi", side=4, line=1.25, cex=1.5) }
-    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi_e") { mtext("dmi + env", side=4, line=1.25, cex=1.5) }
-    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
-    else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path_e") { mtext("path + env", side=4, line=1.25, cex=1.5) }
+    for (k in 1:length(uniq_c))
+    {
+      ctr <- ctr + 1
+      if (uniq_c[k]==0)
+      {
+        handle10 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_neutral", "_deme6_gen10.csv")
+        handle100 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_neutral", "_deme6_gen100.csv")
+      }
+      else	
+      {
+        handle10 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_c", uniq_c[k], "_deme6_gen10.csv")
+        handle100 <- paste0(uniq_runs[i], "_m", uniq_m[j], "_c", uniq_c[k], "_deme6_gen100.csv")
+      }
+      
+      dat10 <- read.csv(handle10, header=FALSE)
+      dat100 <- read.csv(handle100, header=FALSE)
+      plot(0, type="n", xlim=c(0,1), ylim=c(0,1), xlab="Median gen 10 Q12", ylab="Median gen 100 Q12", cex.lab=1.75, cex.axis=1.5, las=1)
+      box(lwd=2)
+      if (ctr < 7)
+      {
+        mtext(paste0("m = ", uniq_m[j]), line=2, cex=1.5)
+        mtext(paste0("c = ", uniq_c[k]), line=0.25, cex=1.5)
+      }
+      if (ctr %% 6 == 0)
+      {
+        if 		(uniq_runs[i]=="dmi") { mtext("BDMI", side=4, line=1.25, cex=1.5) }
+        else if (uniq_runs[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
+      }
+      cor_mat <- matrix(0, 20, 2)
+      for (l in 1:20)
+      {
+        rep_sub10 <- subset(dat10, dat10[,1]==l)
+        rep_sub100 <- subset(dat100, dat100[,1]==l)
+        cor_mat[l,1] <- median(rep_sub10[,6])
+        cor_mat[l,2] <- median(rep_sub100[,6])
+        points(median(rep_sub10[,6]), median(rep_sub100[,6]), pch=21, bg=rep_cols[l], cex=2)
+      }
+      mtext(paste0("r = ", round(cor(cor_mat[,1], cor_mat[,2], method="pearson"), 3)), line=-2, adj=0.05, cex=1.25)
+    }
   }
 }
 
-mtext('Admixture Proportion', side = 1, outer = TRUE, line = 2, cex=2.5)
-mtext('Probability of Genotype', side = 2, outer = TRUE, line = 2, cex=2.5)
 dev.off()

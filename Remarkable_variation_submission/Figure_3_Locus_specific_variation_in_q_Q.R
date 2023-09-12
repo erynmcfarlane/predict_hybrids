@@ -1,4 +1,4 @@
-#### Script that gives Figure 2
+#### Script that gives Figure 3, different inputs gives Figures S3 A and B
 
 ###Must run SNP_inputs.R - then this script will work.
 source("SNP_inputs.R")
