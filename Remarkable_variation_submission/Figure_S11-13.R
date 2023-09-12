@@ -25,7 +25,7 @@ colours<-met.brewer(name='OKeeffe1', n=20, type='continuous')
 
 
 ### I run this same code three different times to get plots specific to the locus that I'm interested in
-pdf(file="genomic_cline_plots1.4.pdf", width=25, height=10) ### change the title of the plot here
+pdf(file="genomic_cline_plots1.10.pdf", width=25, height=10) ### change the title of the plot here
 par(mfrow=c(2,6), mar=c(5,5,0,0), oma=c(5,5,4,4))
 layout(matrix(c(9,7,8,12,10,11,
                 3,1,2,6,4,5), 2, 6, byrow=TRUE))
@@ -57,7 +57,7 @@ for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   axis(1, at=c(0,1), cex.axis=2.5)
   axis(2, at=c(0,1), cex.axis=2.5, las=1)
   rect(par('usr')[1], par('usr')[3], par('usr')[2], par('usr')[4], col='light gray')
-  genomic.cline.plot(genomic.clines.reps, 1) ###this is where I tell it which SNP of the three I want (i.e. 1 = locus 1.4, 2 = locus 1.10, 3 = locus 3.4)
+  genomic.cline.plot(genomic.clines.reps, 2) ###this is where I tell it which SNP of the three I want (i.e. 1 = locus 1.4, 2 = locus 1.10, 3 = locus 3.4)
   if (i %in% c(9,7,8,12,10,11))
   {
     mtext(paste0("m = ", alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$m[i]), line=2, cex=1.5)
@@ -66,7 +66,7 @@ for(i in 1:length(unique(alldata_df_6_10_noE$index))){
   
   if (i %in% c(11,5))
   {
-    if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="dmi") { mtext("bdmi", side=4, line=1.25, cex=1.5) }
+    if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="bdmi") { mtext("BDMI", side=4, line=1.25, cex=1.5) }
      else if (alldata_df_6_10_noE[which(alldata_df_6_10_noE$index==unique(alldata_df_6_10_noE$index)[i]),]$mech[i]=="path") { mtext("path", side=4, line=1.25, cex=1.5) }
   }
 }
