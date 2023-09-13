@@ -5,6 +5,7 @@
 
 library(MetBrewer)
 contin_cols <- met.brewer("Derain", 151)
+demeramp <- met.brewer("Signac", 11)
 
 contin <- read.csv("dmi_m0.01_c0.9_deme6_gen10.csv", header=F)
 dim(contin)
@@ -44,15 +45,41 @@ for (i in 1:20)
 
 
 
+
 ## with fitness matrices
 
-quartz(height=6, width=6)
-layout(matrix(c(1,1,1,1,1,1,1,2,2,2,2,2,2,2,
-                1,1,1,1,1,1,1,2,2,2,2,2,2,2,
-                1,1,1,1,1,1,1,2,2,2,2,2,2,2,
-                3,3,4,4,5,5,6,6,7,7,8,8,9,9,
-                10,10,11,11,12,12,13,13,14,14,15,15,16,16,
-                17,17,18,18,19,19,20,20,21,21,22,22,23,23), 6, 14, byrow=TRUE))
+quartz(height=8, width=6)
+layout(matrix(c(rep(1,14),
+                rep(2,14),
+                3,3,3,3,3,3,3,4,4,4,4,4,4,4,
+                3,3,3,3,3,3,3,4,4,4,4,4,4,4,
+                3,3,3,3,3,3,3,4,4,4,4,4,4,4,
+                5,5,6,6,7,7,8,8,9,9,10,10,11,11,
+                12,12,13,13,14,14,15,15,16,16,17,17,18,18,
+                19,19,20,20,21,21,22,22,23,23,24,24,25,25), 8, 14, byrow=TRUE))
+
+## deme diagrams
+
+par(mar=c(0,0,0,0))
+plot(0, type="n", xlim=c(0,13), ylim=c(0,1), xlab="", ylab="", axes=FALSE)
+deme11_x <- seq(2.5,10.5, 1)
+segments(1, 0.5, 12, 0.5, lwd=5)
+for(i in 1:9) { points(deme11_x[i], 0.5, cex=5, pch=21, bg=demeramp[i+1]) }
+points(1, 0.5, cex=10, pch=21, bg=demeramp[1])
+points(12, 0.5, cex=10, pch=21, bg=demeramp[11])
+rect(0,0,1,1, col="white", lwd=0)
+rect(12,0,13,1, col="white", lwd=0)
+mtext("A", adj=0.015, cex=1.5, line=-2)
+
+plot(0, type="n", xlim=c(0,13), ylim=c(0,1), xlab="", ylab="", axes=FALSE)
+segments(5, 0.5, 8, 0.5, lwd=5)
+points(5, 0.5, cex=10, pch=21, bg=demeramp[1])
+points(6.5, 0.5, cex=5, pch=21, bg=demeramp[6])
+points(8, 0.5, cex=10, pch=21, bg=demeramp[11])
+rect(4,0,5,1, col="white", lwd=0)
+rect(8,0,9,1, col="white", lwd=0)
+
+
 par(mar=c(3,3,2,2))
 
 ## DMI fitness matrix
@@ -77,7 +104,7 @@ text(1.5, 0.5, labels="1 - c", cex=1.5)
 text(2.5, 2.5, labels="1", cex=1.5)
 text(2.5, 1.5, labels="1", cex=1.5)
 text(2.5, 0.5, labels="1", cex=1.5)
-mtext("A", adj=-0.15, cex=1.5)
+mtext("B", adj=-0.15, cex=1.5)
 
 ## Pathways fitness matrix
 plot(0, type="n", axes=FALSE, xlab="", ylab="", main="Pathway", xlim=c(0,3), ylim=c(0,3), xaxt="n", yaxt="n", cex.lab=1.5, cex.main=1.5)
@@ -101,7 +128,7 @@ text(1.5, 0.5, labels="1 - c/2", cex=1.5)
 text(2.5, 2.5, labels="1 - c", cex=1.5)
 text(2.5, 1.5, labels="1 - c/2", cex=1.5)
 text(2.5, 0.5, labels="1", cex=1.5)
-mtext("B", adj=-0.15, cex=1.5)
+mtext("C", adj=-0.15, cex=1.5)
 
 ## contingency
 par(mar=c(1, 0.5, 1, 0.5))
@@ -119,7 +146,7 @@ for (i in 1:20)
   rect(0, 0, 1, 1, col=contin_cols[(contin_mat[i,7] + 1)], lwd=2)
   rect(1, 0, 2, 1, col=contin_cols[(contin_mat[i,8] + 1)], lwd=2)
   rect(2, 0, 3, 1, col=contin_cols[(contin_mat[i,9] + 1)], lwd=2)
-  if (i==1) { mtext("C", adj=0, cex=1.5, line=1) }
+  if (i==1) { mtext("D", adj=0, cex=1.5, line=1) }
 }
 
 ## legend
@@ -131,5 +158,3 @@ rect(1/6, 0.05, 1/2, 0.95, lwd=1.25)
 text(0.75, 0.1, labels="0", cex=1.25)
 text(0.75, 0.5, labels="75", cex=1.25)
 text(0.75, 0.9, labels="150", cex=1.25)
-
-
