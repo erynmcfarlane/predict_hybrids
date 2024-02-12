@@ -15,24 +15,24 @@ module load r
 ### for the revision, Zach wants all of these in all 12 scenarios, not just two, so, here we go.
 
 
-### 100:1
+### 50:1
 
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.01 -c 0 -o ./hundredone/dmi_m0.01_neutral
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.2 -o ./hundredone/dmi_m0.01_c0.2
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o ./hundredone/dmi_m0.01_c0.9
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.01 -c 0 -o ./fiftyone/dmi_m0.01_neutral
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.2 -o ./fiftyone/dmi_m0.01_c0.2
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o ./fiftyone/dmi_m0.01_c0.9
 
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.2 -c 0 -o ./hundredone/dmi_m0.2_neutral
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.2 -o ./hundredone/dmi_m0.2_c0.2
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o ./hundredone/dmi_m0.2_c0.9
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.2 -c 0 -o ./fiftyone/dmi_m0.2_neutral
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.2 -o ./fiftyone/dmi_m0.2_c0.2
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_1.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o ./fiftyone/dmi_m0.2_c0.9
 
 ###path
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.01 -c 0 -o ./hundredone/path_m0.01_neutral
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.2 -o ./hundredone/path_m0.01_c0.2
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o ./hundredone/path_m0.01_c0.9
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.01 -c 0 -o ./fiftyone/path_m0.01_neutral
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.2 -o ./fiftyone/path_m0.01_c0.2
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.01 -c 0.9 -o ./fiftyone/path_m0.01_c0.9
 
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.2 -c 0 -o ./hundredone/path_m0.2_neutral
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.2 -o ./hundredone/path_m0.2_c0.2
-./dfuse -d 3_deme_uneven_100_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o ./hundredone/path_m0.2_c0.9
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1_neutral.txt -r 20 -g 100 -m 0.2 -c 0 -o ./fiftyone/path_m0.2_neutral
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.2 -o ./fiftyone/path_m0.2_c0.2
+./dfuse -d 3_deme_uneven_50_1.txt -e /gscratch/buerkle/data/incompatible/runs/inputfiles/epifile_2c.txt -s /gscratch/buerkle/data/incompatible/runs/inputfiles/selfile_1.txt -r 20 -g 100 -m 0.2 -c 0.9 -o ./fiftyone/path_m0.2_c0.9
 
 ### 10:1
 ### DMI

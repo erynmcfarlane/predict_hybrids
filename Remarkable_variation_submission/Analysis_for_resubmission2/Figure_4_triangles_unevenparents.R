@@ -17,7 +17,7 @@ gen10_deme2 <- subset(gen10, gen10$deme==2)
 dim(gen10_deme2)
 head(gen10_deme2)
 
-pdf(file="triangles_dmi_m0.01_c0.9_twoone.pdf", width=15, height=12) ###change this as you go!
+pdf(file="triangles_dmi_m0.01_c0.9_fiftyone.pdf", width=15, height=12) ###change this as you go!
 par(mar=c(5,5,1,1), mfrow=c(4,5))
 for (i in 1:20)
 {
