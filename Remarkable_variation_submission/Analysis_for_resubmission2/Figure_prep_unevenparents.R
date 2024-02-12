@@ -46,7 +46,11 @@ for (i in 1:length(uniq_runs))
 ## export for table
 table_anova_out <- anova_out[,c(1:4,8:13)]
 colnames(table_anova_out) <- c("run", "m", "c", "gen", "q_f", "q_p", "het_f", "het_p", "junc_f", "junc_p")
+<<<<<<< HEAD
 #write.table(table_anova_out, file="anova_out_table.txt", row.names=F, quote=F, sep="\t") ### what is the table that is actually exported called? There should be 12 tables?
+=======
+#write.table(table_anova_out, file="anova_out_table.txt", row.names=F, quote=F, sep="\t")
+>>>>>>> 9f744d80bf67fa2b780894a16047361cbe375149
 
 anova_out_gen10 <- subset(anova_out, anova_out[,4]=="10")
 anova_out_gen100 <- subset(anova_out, anova_out[,4]=="100")
