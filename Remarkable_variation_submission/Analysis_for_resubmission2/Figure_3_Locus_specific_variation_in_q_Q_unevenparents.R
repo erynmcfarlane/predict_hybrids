@@ -57,7 +57,7 @@ colours <- met.brewer(name="OKeeffe1", n=20, type="continuous")
 
 
 ###admix --------------------------------------------------------
-pdf(file="plotsum_admix_twoone.pdf", width=10, height=6) ### change the name here depending on the specifics
+pdf(file="plotsum_admix_fiftyone.pdf", width=10, height=6) ### change the name here depending on the specifics
 layout(matrix(c(13, 16:21, 14, seq(1,11,2), 15, seq(2,12,2)), nrow=3, byrow=TRUE),
        widths=c(3,rep(5,6)), heights=c(1, 5, 5))
 par(mar=c(4,2,0.1,0.1))
@@ -69,7 +69,7 @@ for(i in 1:length(unique(summaries_q$index_nosnp))){
   axis(1, at=c(1.1,2,3,3.95), labels=c("", "", "", ""))
   summaries_q_temp <- summaries_q[which(summaries_q$index_nosnp ==
                                         unique(summaries_q$index_nosnp)[i]),]
-  for(j in 1:20){
+  for(j in 1:20){ 
     ## cab: I broke the connection between chromosome 1 and 2 markers
     ### sem: since the path models include chromosome 2, we're going to take this through all of chromosome 3, even if they're no longer consistent with Doro's figure
     lines(summaries_q_temp[which(summaries_q_temp$rep==j),6][1:46] ,
@@ -111,7 +111,7 @@ text(0.2, 0.5, "path", cex=2, srt=90)
 dev.off()
 
 ### Intersource Ancestry ### ---------------------------------------
-pdf(file="plotsum_intersource_twoone.pdf", width=10, height=6)
+pdf(file="plotsum_intersource_fiftyone.pdf", width=10, height=6)
 layout(matrix(c(13, 16:21, 14, seq(1,11,2), 15, seq(2,12,2)), nrow=3, byrow=TRUE),
        widths=c(3,rep(5,6)), heights=c(1, 5, 5))
 par(mar=c(4,2,0.1,0.1))

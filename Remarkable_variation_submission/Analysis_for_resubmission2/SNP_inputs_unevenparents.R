@@ -9,8 +9,8 @@ library(MetBrewer)
 library(introgress)
 
 #datafiles<-list.files("/gscratch/buerkle/data/incompatible/runs",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
-###folder below is hardcoded for each 2:1, 5:1, 10:1 and 100:1
-datafiles<-list.files("/gscratch/emcfarl2/predicting_hybrids/twoone",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
+###folder below is hardcoded for each 2:1, 5:1, 10:1 and 50:1
+datafiles<-list.files("/gscratch/emcfarl2/predicting_hybrids/fiftyone",  pattern="*main", recursive=TRUE, include.dirs=TRUE)
 #datafiles_11<-datafiles[c(293:316)]
 basenames<-basename(datafiles)
 m<-str_extract(basenames, "(\\d+\\.*\\d*)")
