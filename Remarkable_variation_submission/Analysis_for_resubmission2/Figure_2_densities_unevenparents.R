@@ -13,7 +13,7 @@ par(mar=c(6,6,0,0), oma=c(0,0,4,4), mfrow=c(2,6))
 ##data_deme_2[which(data_deme_2$mech==anova_out_gen10$[i,1] & data_deme_2$m==anova_out_gen10$[i,2] & data_deme_2$c==anova_out_gen10$[i,3] & data_deme_2$gen==anova_out_gen10$[i,4],]
 
 
-for (i in 1:12) ##rep 3,4 doesn't work
+for (i in 1:12) ### clearly, this is still not working.
 {
   dat_in <- data_deme_2[which(data_deme_2$mech==anova_out_gen10[i,1] & data_deme_2$m==anova_out_gen10[i,2] & data_deme_2$c==anova_out_gen10[i,3] & data_deme_2$gen==anova_out_gen10[i,4]), ]
   plot(0, type="n", xlab="", ylab="", cex.lab=1.75, cex.axis=1.5, ylim=c(0,12), xlim=c(0,1), las=1, xaxt="n")
