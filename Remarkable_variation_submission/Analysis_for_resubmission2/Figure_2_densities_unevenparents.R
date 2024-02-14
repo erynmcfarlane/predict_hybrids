@@ -1,5 +1,6 @@
 #### Script for Figure 2 ####
 source('SNP_inputs_unevenparents.R')
+source('Figure_prep_unevenparents.R')
 ### instead of anova_out_gen10, this is alldata_df
 
 triangle_cols <- met.brewer("OKeeffe1", 20)
