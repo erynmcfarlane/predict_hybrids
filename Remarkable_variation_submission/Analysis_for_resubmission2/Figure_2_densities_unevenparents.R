@@ -1,11 +1,12 @@
 #### Script for Figure 2 ####
 source('SNP_inputs_unevenparents.R')
+source('Figure_prep_unevenparents.R')
 ### instead of anova_out_gen10, this is alldata_df
 
 triangle_cols <- met.brewer("OKeeffe1", 20)
 
 #quartz(height=4, width=12)
-pdf(height=4, width=12, file="anova_gen10_rep_lines_fiftyone.pdf")
+pdf(height=4, width=12, file="anova_gen10_rep_lines_twoone.pdf")
 par(mar=c(6,6,0,0), oma=c(0,0,4,4), mfrow=c(2,6))
 
 ###anova_out_gen10 has only 12 rows in it. Need to read in the actualy data 1:12 based on this. 
